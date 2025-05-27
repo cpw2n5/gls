@@ -1,0 +1,172 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Contact Us" description="Get in touch with the GetLifeSorted team with your questions, feedback, or suggestions.">
+  <div class="container py-8">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-3xl md:text-4xl font-bold mb-6">Contact Us</h1>
+      
+      <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+        Have questions, feedback, or suggestions? We'd love to hear from you. Fill out the form below and we'll get back to you as soon as possible.
+      </p>
+      
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+        <form id="contact-form" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Name <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800"
+              />
+            </div>
+            
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Email <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label for="subject" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Subject <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="subject"
+              name="subject"
+              required
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800"
+            />
+          </div>
+          
+          <div>
+            <label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Message <span class="text-red-500">*</span>
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              rows="6"
+              required
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800"
+            ></textarea>
+          </div>
+          
+          <div>
+            <button
+              type="submit"
+              class="w-full md:w-auto bg-primary-600 hover:bg-primary-700 text-white py-2 px-6 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+            >
+              Send Message
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <h2 class="text-xl font-semibold mb-4">Other Ways to Reach Us</h2>
+          <div class="space-y-4">
+            <div>
+              <h3 class="font-medium text-gray-900 dark:text-gray-100">Email</h3>
+              <p class="text-gray-600 dark:text-gray-400">info@getlifesorted.com</p>
+            </div>
+            
+            <div>
+              <h3 class="font-medium text-gray-900 dark:text-gray-100">Social Media</h3>
+              <div class="flex space-x-4 mt-2">
+                <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+                  <span class="sr-only">Twitter</span>
+                  <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
+                  </svg>
+                </a>
+                
+                <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+                  <span class="sr-only">Facebook</span>
+                  <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"></path>
+                  </svg>
+                </a>
+                
+                <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
+                  <span class="sr-only">LinkedIn</span>
+                  <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd"></path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <h2 class="text-xl font-semibold mb-4">Frequently Asked Questions</h2>
+          <div class="space-y-4">
+            <div>
+              <h3 class="font-medium text-gray-900 dark:text-gray-100">Are your calculators free to use?</h3>
+              <p class="text-gray-600 dark:text-gray-400">Yes, all calculators on GetLifeSorted.com are completely free to use.</p>
+            </div>
+            
+            <div>
+              <h3 class="font-medium text-gray-900 dark:text-gray-100">Do you offer financial advice?</h3>
+              <p class="text-gray-600 dark:text-gray-400">We provide educational content and tools, but we do not offer personalized financial advice. Always consult with a qualified professional for specific guidance.</p>
+            </div>
+            
+            <div>
+              <h3 class="font-medium text-gray-900 dark:text-gray-100">How accurate are your calculators?</h3>
+              <p class="text-gray-600 dark:text-gray-400">Our calculators provide estimates based on the information you provide and general financial principles. They are designed for educational purposes and should not be the sole basis for financial decisions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Simple form handling
+  document.getElementById('contact-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    // In a real implementation, this would send the form data to a server
+    // For demo purposes, we'll just show a success message
+    
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    
+    // Log form data
+    console.log('Form submitted with data:');
+    formData.forEach((value, key) => {
+      console.log(`${key}: ${value}`);
+    });
+    
+    // Show success message
+    form.innerHTML = `
+      <div class="text-center py-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h3 class="text-xl font-semibold mb-2">Message Sent!</h3>
+        <p class="text-gray-600 dark:text-gray-400">
+          Thank you for contacting us. We'll get back to you as soon as possible.
+        </p>
+      </div>
+    `;
+  });
+</script>

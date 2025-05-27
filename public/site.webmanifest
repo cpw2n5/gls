@@ -1,0 +1,16 @@
+{
+  "name": "GetLifeSorted",
+  "short_name": "GetLifeSorted",
+  "description": "Financial tools, calculators, and informative articles to help you get your life sorted.",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "32x32",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#0369A1",
+  "background_color": "#FFFFFF",
+  "display": "standalone",
+  "start_url": "/"
+}

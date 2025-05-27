@@ -1,0 +1,66 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  class?: string;
+  loading?: 'lazy' | 'eager';
+  decoding?: 'async' | 'sync' | 'auto';
+  sizes?: string;
+  fetchpriority?: 'high' | 'low' | 'auto';
+}
+
+const { 
+  src, 
+  alt, 
+  width, 
+  height, 
+  class: className = '',
+  loading = 'lazy',
+  decoding = 'async',
+  sizes = '100vw',
+  fetchpriority = 'auto'
+} = Astro.props;
+
+// Determine if the image is external
+const isExternal = src.startsWith('http');
+
+// For external images, we can't generate different sizes
+// For local images, we would use Astro's image optimization
+// This is a simplified version - in a real implementation, you'd use Astro's image optimization API
+---
+
+{isExternal ? (
+  <img
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    class={className}
+    loading={loading}
+    decoding={decoding}
+    fetchpriority={fetchpriority}
+  />
+) : (
+  <img
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    class={className}
+    loading={loading}
+    decoding={decoding}
+    sizes={sizes}
+    fetchpriority={fetchpriority}
+  />
+)}
+
+<style>
+  /* Add default styling for images */
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+</style>

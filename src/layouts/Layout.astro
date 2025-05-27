@@ -1,0 +1,74 @@
+---
+import Header from "../components/global/Header.astro";
+import Footer from "../components/global/Footer.astro";
+import SEO from "../components/global/SEO.astro";
+import ConsentManager from "../components/global/ConsentManager.astro";
+import Analytics from "../components/analytics/Analytics.astro";
+import FontOptimization from "../components/global/FontOptimization.astro";
+
+interface Props {
+	title: string;
+	description?: string;
+	canonicalUrl?: string;
+	image?: string;
+	type?: 'website' | 'article' | 'calculator';
+	publishDate?: Date;
+	updatedDate?: Date;
+	author?: string;
+	tags?: string[];
+	section?: string;
+	noIndex?: boolean;
+	breadcrumbs?: {
+		name: string;
+		url: string;
+	}[];
+}
+
+const {
+	title,
+	description = "Financial tools, calculators, and informative articles to help you get your life sorted.",
+	canonicalUrl,
+	image,
+	type = 'website',
+	publishDate,
+	updatedDate,
+	author,
+	tags,
+	section,
+	noIndex,
+	breadcrumbs
+} = Astro.props;
+
+import "../styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<SEO
+			title={title}
+			description={description}
+			canonicalUrl={canonicalUrl}
+			image={image}
+			type={type}
+			publishDate={publishDate}
+			updatedDate={updatedDate}
+			author={author}
+			tags={tags}
+			section={section}
+			noIndex={noIndex}
+			breadcrumbs={breadcrumbs}
+		/>
+		<FontOptimization />
+		<Analytics />
+	</head>
+	<body class="min-h-screen flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+		<Header />
+		<main class="flex-grow">
+			<slot />
+		</main>
+		<Footer />
+		<ConsentManager />
+	</body>
+</html>

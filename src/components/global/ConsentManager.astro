@@ -1,0 +1,290 @@
+---
+import { consentConfig } from '../../config/analytics';
+
+// Props for customization
+interface Props {
+  className?: string;
+}
+
+const { className = '' } = Astro.props;
+
+// Only show if consent management is enabled
+const showConsentManager = consentConfig.enabled;
+---
+
+{showConsentManager && (
+  <div id="consent-banner" class={`fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-lg p-4 z-50 ${className}`}>
+    <div class="container mx-auto max-w-6xl">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="flex-1">
+          <h3 class="text-lg font-semibold mb-1">Privacy Preferences</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300">
+            We use cookies to enhance your browsing experience, serve personalized ads or content, and analyze our traffic. 
+            By clicking "Accept All", you consent to our use of cookies.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button 
+            id="consent-customize" 
+            class="px-4 py-2 text-sm bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-md transition"
+          >
+            Customize
+          </button>
+          <button 
+            id="consent-reject" 
+            class="px-4 py-2 text-sm bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-md transition"
+          >
+            Reject All
+          </button>
+          <button 
+            id="consent-accept" 
+            class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md transition"
+          >
+            Accept All
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+<div id="consent-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold">Privacy Preferences</h2>
+        <button id="consent-modal-close" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+          <span class="sr-only">Close</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      <div class="space-y-4 mb-6">
+        <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-md">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="font-medium">Essential Cookies</h3>
+            <div class="relative inline-block w-10 mr-2 align-middle">
+              <input type="checkbox" id="consent-essential" class="sr-only" checked disabled />
+              <span class="block h-6 w-10 rounded-full bg-gray-400 cursor-not-allowed"></span>
+              <span class="absolute left-0 top-0 block h-6 w-6 rounded-full bg-white shadow transform translate-x-4"></span>
+            </div>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-300">
+            These cookies are necessary for the website to function and cannot be disabled.
+          </p>
+        </div>
+        
+        <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-md">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="font-medium">Analytics Cookies</h3>
+            <div class="relative inline-block w-10 mr-2 align-middle">
+              <input type="checkbox" id="consent-analytics" class="sr-only" />
+              <label for="consent-analytics" class="block h-6 w-10 rounded-full bg-gray-400 cursor-pointer"></label>
+              <span id="analytics-toggle" class="absolute left-0 top-0 block h-6 w-6 rounded-full bg-white shadow transform"></span>
+            </div>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-300">
+            These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our site.
+          </p>
+        </div>
+        
+        <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-md">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="font-medium">Advertisement Cookies</h3>
+            <div class="relative inline-block w-10 mr-2 align-middle">
+              <input type="checkbox" id="consent-ads" class="sr-only" />
+              <label for="consent-ads" class="block h-6 w-10 rounded-full bg-gray-400 cursor-pointer"></label>
+              <span id="ads-toggle" class="absolute left-0 top-0 block h-6 w-6 rounded-full bg-white shadow transform"></span>
+            </div>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-300">
+            These cookies may be set through our site by our advertising partners to build a profile of your interests and show you relevant ads.
+          </p>
+        </div>
+      </div>
+      
+      <div class="flex justify-end gap-2">
+        <button 
+          id="consent-modal-save" 
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition"
+        >
+          Save Preferences
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Constants
+  const CONSENT_COOKIE_NAME = 'gls_consent';
+  const COOKIE_EXPIRATION = consentConfig.cookieExpiration; // days
+  
+  // DOM Elements
+  const consentBanner = document.getElementById('consent-banner');
+  const consentModal = document.getElementById('consent-modal');
+  const customizeBtn = document.getElementById('consent-customize');
+  const rejectAllBtn = document.getElementById('consent-reject');
+  const acceptAllBtn = document.getElementById('consent-accept');
+  const modalCloseBtn = document.getElementById('consent-modal-close');
+  const modalSaveBtn = document.getElementById('consent-modal-save');
+  const analyticsToggle = document.getElementById('analytics-toggle');
+  const adsToggle = document.getElementById('ads-toggle');
+  const analyticsCheckbox = document.getElementById('consent-analytics') as HTMLInputElement;
+  const adsCheckbox = document.getElementById('consent-ads') as HTMLInputElement;
+  
+  // Helper functions
+  function setCookie(name: string, value: string, days: number) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = `expires=${date.toUTCString()}`;
+    document.cookie = `${name}=${value};${expires};path=/;SameSite=Lax`;
+  }
+  
+  function getCookie(name: string): string | null {
+    const nameEQ = `${name}=`;
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i].trim();
+      if (c.indexOf(nameEQ) === 0) {
+        return c.substring(nameEQ.length, c.length);
+      }
+    }
+    return null;
+  }
+  
+  function saveConsent(analytics: boolean, ads: boolean) {
+    const consentValue = JSON.stringify({ analytics, ads });
+    setCookie(CONSENT_COOKIE_NAME, consentValue, COOKIE_EXPIRATION);
+    
+    // Dispatch a custom event that other scripts can listen for
+    window.dispatchEvent(new CustomEvent('consentUpdated', { 
+      detail: { analytics, ads } 
+    }));
+    
+    // Hide the banner/modal
+    if (consentBanner) consentBanner.style.display = 'none';
+    if (consentModal) consentModal.style.display = 'none';
+    
+    // Reload the page to apply changes
+    window.location.reload();
+  }
+  
+  function loadSavedConsent() {
+    const savedConsent = getCookie(CONSENT_COOKIE_NAME);
+    if (savedConsent) {
+      try {
+        const { analytics, ads } = JSON.parse(savedConsent);
+        
+        // Update UI to reflect saved preferences
+        if (analyticsCheckbox) analyticsCheckbox.checked = analytics;
+        if (adsCheckbox) adsCheckbox.checked = ads;
+        
+        // Update toggle positions
+        updateTogglePositions();
+        
+        // Hide the banner since consent is already given
+        if (consentBanner) consentBanner.style.display = 'none';
+        
+        // Dispatch the event for other scripts
+        window.dispatchEvent(new CustomEvent('consentUpdated', { 
+          detail: { analytics, ads } 
+        }));
+      } catch (e) {
+        console.error('Error parsing consent cookie:', e);
+      }
+    }
+  }
+  
+  function updateTogglePositions() {
+    if (analyticsToggle && analyticsCheckbox) {
+      analyticsToggle.classList.toggle('translate-x-4', analyticsCheckbox.checked);
+      analyticsToggle.parentElement?.classList.toggle('bg-blue-600', analyticsCheckbox.checked);
+      analyticsToggle.parentElement?.classList.toggle('bg-gray-400', !analyticsCheckbox.checked);
+    }
+    
+    if (adsToggle && adsCheckbox) {
+      adsToggle.classList.toggle('translate-x-4', adsCheckbox.checked);
+      adsToggle.parentElement?.classList.toggle('bg-blue-600', adsCheckbox.checked);
+      adsToggle.parentElement?.classList.toggle('bg-gray-400', !adsCheckbox.checked);
+    }
+  }
+  
+  // Event Listeners
+  if (customizeBtn) {
+    customizeBtn.addEventListener('click', () => {
+      if (consentModal) consentModal.style.display = 'flex';
+    });
+  }
+  
+  if (rejectAllBtn) {
+    rejectAllBtn.addEventListener('click', () => {
+      saveConsent(false, false);
+    });
+  }
+  
+  if (acceptAllBtn) {
+    acceptAllBtn.addEventListener('click', () => {
+      saveConsent(true, true);
+    });
+  }
+  
+  if (modalCloseBtn) {
+    modalCloseBtn.addEventListener('click', () => {
+      if (consentModal) consentModal.style.display = 'none';
+    });
+  }
+  
+  if (modalSaveBtn) {
+    modalSaveBtn.addEventListener('click', () => {
+      const analyticsConsent = analyticsCheckbox?.checked || false;
+      const adsConsent = adsCheckbox?.checked || false;
+      saveConsent(analyticsConsent, adsConsent);
+    });
+  }
+  
+  // Toggle UI updates
+  if (analyticsCheckbox) {
+    analyticsCheckbox.addEventListener('change', updateTogglePositions);
+  }
+  
+  if (adsCheckbox) {
+    adsCheckbox.addEventListener('change', updateTogglePositions);
+  }
+  
+  // Initialize
+  document.addEventListener('DOMContentLoaded', () => {
+    loadSavedConsent();
+    updateTogglePositions();
+  });
+  
+  // Close modal when clicking outside
+  window.addEventListener('click', (e) => {
+    if (e.target === consentModal) {
+      consentModal.style.display = 'none';
+    }
+  });
+  
+  // Expose consent API to window for other scripts
+  window.glsConsent = {
+    getConsent: () => {
+      const savedConsent = getCookie(CONSENT_COOKIE_NAME);
+      if (savedConsent) {
+        try {
+          return JSON.parse(savedConsent);
+        } catch (e) {
+          return { analytics: false, ads: false };
+        }
+      }
+      return { analytics: false, ads: false };
+    },
+    hasAnalyticsConsent: () => {
+      return window.glsConsent.getConsent().analytics;
+    },
+    hasAdsConsent: () => {
+      return window.glsConsent.getConsent().ads;
+    }
+  };
+</script>

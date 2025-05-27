@@ -1,0 +1,154 @@
+---
+import ArticleLayout from "../../layouts/ArticleLayout.astro";
+import { getCollection, getEntry } from "astro:content";
+
+// Generate static paths for all guides
+export async function getStaticPaths() {
+  const guides = await getCollection("guides");
+  
+  return guides.map(guide => ({
+    params: { slug: guide.slug },
+    props: { guide },
+  }));
+}
+
+// Get the guide data from props
+const { guide } = Astro.props;
+const { Content } = await guide.render();
+
+// Get the raw content for table of contents and reading time
+const rawContent = guide.body;
+
+// Get related guides based on tags
+const allGuides = await getCollection("guides", ({ data, slug }) => {
+  return !data.draft && 
+         data.tags.some(tag => guide.data.tags.includes(tag)) && 
+         slug !== guide.slug;
+});
+
+// Get explicitly related guides if specified
+const explicitlyRelatedGuides = [];
+if (guide.data.relatedGuides && guide.data.relatedGuides.length > 0) {
+  for (const relatedSlug of guide.data.relatedGuides) {
+    try {
+      const related = await getEntry('guides', relatedSlug);
+      if (related && !related.data.draft) {
+        explicitlyRelatedGuides.push(related);
+      }
+    } catch (e) {
+      // Skip if guide not found
+    }
+  }
+}
+
+// Get related calculators if specified
+const relatedCalculators = [];
+if (guide.data.relatedCalculators && guide.data.relatedCalculators.length > 0) {
+  for (const calculatorSlug of guide.data.relatedCalculators) {
+    try {
+      const calculator = await getEntry('calculators', calculatorSlug);
+      if (calculator) {
+        relatedCalculators.push(calculator);
+      }
+    } catch (e) {
+      // Skip if calculator not found
+    }
+  }
+}
+
+// Combine and sort related guides by publish date and limit to 3
+const relatedGuides = [...explicitlyRelatedGuides, ...allGuides]
+  .filter((guide, index, self) => 
+    index === self.findIndex((g) => g.slug === guide.slug)
+  )
+  .sort((a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime())
+  .slice(0, 3);
+---
+
+<ArticleLayout
+  title={guide.data.title}
+  description={guide.data.description}
+  publishDate={guide.data.publishDate}
+  updatedDate={guide.data.updatedDate}
+  author={guide.data.author}
+  image={guide.data.image}
+  tags={guide.data.tags}
+  content={rawContent}
+>
+  {guide.data.difficulty && (
+    <div class="mb-6 flex items-center">
+      <span class="inline-block bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200 rounded-full px-3 py-1 text-sm font-medium mr-2">
+        {guide.data.difficulty.charAt(0).toUpperCase() + guide.data.difficulty.slice(1)} Level
+      </span>
+      
+      {guide.data.estimatedTime && (
+        <span class="inline-block bg-gray-100 dark:bg-gray-700 rounded-full px-3 py-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+          {guide.data.estimatedTime}
+        </span>
+      )}
+    </div>
+  )}
+  
+  {guide.data.prerequisites && guide.data.prerequisites.length > 0 && (
+    <div class="mb-6 bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+      <h3 class="text-lg font-semibold mb-2">Prerequisites</h3>
+      <ul class="list-disc pl-5 space-y-1">
+        {guide.data.prerequisites.map(prereq => (
+          <li>{prereq}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+  
+  <Content />
+  
+  <Fragment slot="related">
+    {relatedGuides.length > 0 ? (
+      <ul class="space-y-4">
+        {relatedGuides.map(related => (
+          <li>
+            <a 
+              href={`/guides/${related.slug}`}
+              class="block hover:bg-gray-50 dark:hover:bg-gray-700 p-2 -m-2 rounded-lg transition-colors duration-200"
+            >
+              <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-1">
+                {related.data.title}
+              </h4>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                {related.data.description.length > 100 
+                  ? related.data.description.substring(0, 100) + '...' 
+                  : related.data.description
+                }
+              </p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="text-gray-600 dark:text-gray-400 text-sm">
+        No related guides found.
+      </p>
+    )}
+    
+    {relatedCalculators.length > 0 && (
+      <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-semibold mb-3">Related Calculators</h3>
+        <ul class="space-y-3">
+          {relatedCalculators.map(calculator => (
+            <li>
+              <a 
+                href={`/calculators/${calculator.data.slug}`}
+                class="flex items-center text-primary-600 dark:text-primary-400 hover:underline"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+                {calculator.data.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </Fragment>
+</ArticleLayout>

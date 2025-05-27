@@ -1,0 +1,50 @@
+# Cloudflare Pages configuration
+name = "getlifesorted"
+compatibility_date = "2023-10-30"
+compatibility_flags = ["nodejs_compat"]
+
+# Build configuration
+[build]
+command = "npm run build"
+output_dir = "dist"
+base_dir = ""
+
+# Environment variables
+[vars]
+NODE_VERSION = "18"
+
+# Production environment
+[env.production]
+# Add production-specific variables here if needed
+# MY_VAR = "production-value"
+
+# Preview environment (for pull requests)
+[env.preview]
+# Add preview-specific variables here if needed
+# MY_VAR = "preview-value"
+
+# Routes configuration
+[routes]
+# Force HTTPS
+pattern = "http://*"
+script = """
+  addEventListener('fetch', event => {
+    event.respondWith(
+      Response.redirect('https://' + event.request.url.slice(7), 301)
+    )
+  })
+"""
+
+# Cache configuration
+[cache]
+# Cache all assets for 1 year
+pattern = "/assets/*"
+ttl = 31536000
+
+# Cache all images for 1 week
+pattern = "/images/*"
+ttl = 604800
+
+# Don't cache HTML files
+pattern = "/*.html"
+ttl = 0

@@ -1,0 +1,97 @@
+---
+import { adsenseConfig, shouldLoadAds } from '../../config/analytics';
+
+interface Props {
+  type: 'banner' | 'sidebar' | 'in-content' | 'footer';
+  className?: string;
+  slot?: string; // Optional slot ID for specific ad units
+}
+
+const { type, className = '', slot = '' } = Astro.props;
+
+// Define ad sizes based on type
+const adSizes = {
+  'banner': 'h-[90px] w-full',
+  'sidebar': 'h-[600px] w-[300px]',
+  'in-content': 'h-[250px] w-full',
+  'footer': 'h-[90px] w-full'
+};
+
+// Define ad slots (these would be your actual AdSense ad unit IDs)
+const adSlots = {
+  'banner': slot || 'banner-default',
+  'sidebar': slot || 'sidebar-default',
+  'in-content': slot || 'in-content-default',
+  'footer': slot || 'footer-default'
+};
+
+// Check if this ad unit type is enabled in config
+const isAdTypeEnabled = adsenseConfig.enabledAdUnits[type] || false;
+
+// Only load ads if they should be loaded (based on environment and config)
+const loadAds = shouldLoadAds() && isAdTypeEnabled;
+
+const adSize = adSizes[type] || adSizes['banner'];
+const adSlot = adSlots[type];
+
+// For responsive ads
+const adFormat = type === 'in-content' ? 'auto' : '';
+---
+
+<div class={`ad-container ${adSize} ${className} bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden`} data-ad-type={type}>
+  {loadAds ? (
+    <ins
+      class="adsbygoogle"
+      style={`display:block; ${type === 'in-content' ? 'min-height:250px;' : ''}`}
+      data-ad-client={adsenseConfig.clientId}
+      data-ad-slot={adSlot}
+      data-ad-format={adFormat}
+      data-full-width-responsive="true"
+      data-adtest={adsenseConfig.testMode ? "on" : "off"}
+    ></ins>
+  ) : (
+    <div class="text-center text-gray-500 dark:text-gray-400">
+      <p class="text-sm">Advertisement</p>
+      <p class="text-xs">{type} format</p>
+    </div>
+  )}
+</div>
+
+<script>
+  // Check if consent is given for ads
+  function hasAdsConsent() {
+    return window.glsConsent?.hasAdsConsent() || false;
+  }
+
+  // Initialize AdSense ads
+  function initializeAds() {
+    // Only initialize if consent is given
+    if (hasAdsConsent()) {
+      const adElements = document.querySelectorAll('.adsbygoogle');
+      adElements.forEach(ad => {
+        try {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (e) {
+          console.error('AdSense error:', e);
+        }
+      });
+    }
+  }
+
+  // Listen for consent updates
+  window.addEventListener('consentUpdated', (event) => {
+    const { ads } = (event as CustomEvent).detail;
+    
+    if (ads) {
+      // If consent is given, initialize ads
+      initializeAds();
+    }
+  });
+
+  // Initialize on load if consent is already given
+  window.addEventListener('load', () => {
+    if (hasAdsConsent()) {
+      initializeAds();
+    }
+  });
+</script>

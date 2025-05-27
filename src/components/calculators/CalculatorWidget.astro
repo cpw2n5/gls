@@ -1,0 +1,338 @@
+---
+import InputField from "./InputField.astro";
+import ResultsDisplay from "./ResultsDisplay.astro";
+
+interface InputOption {
+  label: string;
+  value: string | number;
+}
+
+interface InputConfig {
+  id: string;
+  label: string;
+  type: 'text' | 'number' | 'select' | 'radio' | 'checkbox';
+  defaultValue?: string | number | boolean;
+  required?: boolean;
+  min?: number;
+  max?: number;
+  step?: number;
+  options?: InputOption[];
+  helpText?: string;
+}
+
+interface ResultItem {
+  label: string;
+  value: string | number;
+  type?: 'currency' | 'percentage' | 'text' | 'number';
+  description?: string;
+}
+
+interface Props {
+  id: string;
+  title: string;
+  description?: string;
+  inputs: InputConfig[];
+  initialResults?: ResultItem[];
+  showShareButton?: boolean;
+  showPrintButton?: boolean;
+  calculationFunction?: string;
+}
+
+const {
+  id,
+  title,
+  description,
+  inputs = [],
+  initialResults = [],
+  showShareButton = true,
+  showPrintButton = true,
+  calculationFunction = "calculateResults"
+} = Astro.props;
+---
+
+<div class="calculator-widget" data-calculator-id={id}>
+  <div class="space-y-8">
+    {description && (
+      <p class="text-gray-600 dark:text-gray-400 mb-6">
+        {description}
+      </p>
+    )}
+    
+    <form id={`${id}-form`} class="space-y-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h3 class="text-xl font-semibold mb-4">Your Information</h3>
+        
+        <div class="space-y-4">
+          {inputs.map((input) => (
+            <div>
+              <InputField
+                id={input.id}
+                label={input.label}
+                type={input.type}
+                defaultValue={input.defaultValue}
+                required={input.required}
+                min={input.min}
+                max={input.max}
+                step={input.step}
+                options={input.options}
+              />
+              {input.helpText && (
+                <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {input.helpText}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        
+        <div class="mt-6">
+          <button
+            type="submit"
+            class="w-full bg-primary-600 hover:bg-primary-700 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+          >
+            Calculate
+          </button>
+        </div>
+      </div>
+      
+      <div id={`${id}-results-container`}>
+        <ResultsDisplay
+          title="Your Results"
+          results={initialResults}
+          showShareButton={showShareButton}
+          showPrintButton={showPrintButton}
+        />
+      </div>
+    </form>
+  </div>
+</div>
+
+<script define:vars={{ id, calculationFunction }}>
+// Parse URL parameters to pre-fill form and show results
+function parseUrlParams() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const form = document.getElementById(`${id}-form`);
+  
+  if (!form) return;
+  
+  // Pre-fill form fields from URL parameters
+  urlParams.forEach((value, key) => {
+    const input = form.querySelector(`[name="${key}"]`);
+    if (!input) return;
+    
+    if (input.type === 'checkbox') {
+      input.checked = value === 'true';
+    } else if (input.type === 'radio') {
+      const radio = form.querySelector(`[name="${key}"][value="${value}"]`);
+      if (radio) radio.checked = true;
+    } else {
+      input.value = value;
+    }
+  });
+  
+  // If we have parameters, calculate results
+  if (urlParams.size > 0) {
+    calculateAndDisplayResults();
+  }
+}
+
+// Serialize form data to URL parameters
+function serializeFormToUrl() {
+  const form = document.getElementById(`${id}-form`);
+  if (!form) return;
+  
+  const formData = new FormData(form);
+  const urlParams = new URLSearchParams();
+  
+  formData.forEach((value, key) => {
+    urlParams.append(key, value);
+  });
+  
+  // Update URL without reloading the page
+  const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+  window.history.replaceState({}, '', newUrl);
+  
+  return newUrl;
+}
+
+// Get form data as an object
+function getFormData() {
+  const form = document.getElementById(`${id}-form`);
+  if (!form) return {};
+  
+  const formData = new FormData(form);
+  const data = {};
+  
+  formData.forEach((value, key) => {
+    // Convert numeric values
+    if (!isNaN(value) && value !== '') {
+      data[key] = Number(value);
+    } else if (value === 'true' || value === 'false') {
+      data[key] = value === 'true';
+    } else {
+      data[key] = value;
+    }
+  });
+  
+  return data;
+}
+
+// Update results display
+function updateResultsDisplay(results) {
+  const resultsContainer = document.getElementById(`${id}-results-container`);
+  if (!resultsContainer) return;
+  
+  // Create new results display
+  const resultsHTML = `
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mt-6">
+      <h3 class="text-xl font-semibold mb-4">Your Results</h3>
+      
+      <div class="space-y-4">
+        ${results.map(result => `
+          <div class="border-b border-gray-200 dark:border-gray-700 pb-3 last:border-0 last:pb-0">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600 dark:text-gray-400">${result.label}</span>
+              <span class="font-semibold text-lg">
+                ${formatValue(result.value, result.type)}
+              </span>
+            </div>
+            ${result.description ? `
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">${result.description}</p>
+            ` : ''}
+          </div>
+        `).join('')}
+      </div>
+      
+      <div class="flex justify-end gap-3 mt-6">
+        <button 
+          id="${id}-share-button"
+          class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+          Share
+        </button>
+        
+        <button 
+          id="${id}-print-button"
+          class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          Print
+        </button>
+      </div>
+    </div>
+  `;
+  
+  resultsContainer.innerHTML = resultsHTML;
+  
+  // Add event listeners to new buttons
+  document.getElementById(`${id}-print-button`)?.addEventListener('click', () => {
+    window.print();
+  });
+  
+  document.getElementById(`${id}-share-button`)?.addEventListener('click', () => {
+    const shareUrl = serializeFormToUrl();
+    
+    if (navigator.share) {
+      navigator.share({
+        title: document.title,
+        url: shareUrl
+      }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        alert('Link copied to clipboard!');
+      }).catch(console.error);
+    }
+  });
+}
+
+// Format values based on type
+function formatValue(value, type = 'text') {
+  if (type === 'currency') {
+    return new Intl.NumberFormat('en-US', { 
+      style: 'currency', 
+      currency: 'USD',
+      maximumFractionDigits: 0
+    }).format(Number(value));
+  } else if (type === 'percentage') {
+    return `${Number(value).toFixed(1)}%`;
+  } else if (type === 'number') {
+    return new Intl.NumberFormat('en-US').format(Number(value));
+  }
+  return value;
+}
+
+// Calculate and display results
+function calculateAndDisplayResults() {
+  const formData = getFormData();
+  
+  // Call the calculation function if it exists in the global scope
+  if (typeof window[calculationFunction] === 'function') {
+    const results = window[calculationFunction](formData);
+    updateResultsDisplay(results);
+    serializeFormToUrl();
+  } else {
+    console.error(`Calculation function ${calculationFunction} not found`);
+  }
+}
+
+// Form submission handler
+document.getElementById(`${id}-form`)?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  calculateAndDisplayResults();
+  
+  // Track calculator usage event
+  if (typeof window.trackEvent === 'function') {
+    const formData = getFormData();
+    window.trackEvent('calculator_used', {
+      calculator_id: id,
+      calculator_name: document.querySelector('.calculator-widget h3')?.textContent || title,
+      input_count: Object.keys(formData).length
+    });
+  }
+  
+  // Scroll to results
+  const resultsElement = document.getElementById(`${id}-results-container`);
+  if (resultsElement) {
+    resultsElement.scrollIntoView({ behavior: 'smooth' });
+  }
+});
+
+// Track share button clicks
+document.addEventListener('click', (e) => {
+  const shareButton = e.target.closest(`#${id}-share-button`);
+  if (shareButton) {
+    if (typeof window.trackEvent === 'function') {
+      window.trackEvent('calculator_shared', {
+        calculator_id: id,
+        calculator_name: document.querySelector('.calculator-widget h3')?.textContent || title
+      });
+    }
+  }
+});
+
+// Track print button clicks
+document.addEventListener('click', (e) => {
+  const printButton = e.target.closest(`#${id}-print-button`);
+  if (printButton) {
+    if (typeof window.trackEvent === 'function') {
+      window.trackEvent('calculator_printed', {
+        calculator_id: id,
+        calculator_name: document.querySelector('.calculator-widget h3')?.textContent || title
+      });
+    }
+  }
+});
+
+// Initialize form from URL parameters
+document.addEventListener('DOMContentLoaded', parseUrlParams);
+</script>

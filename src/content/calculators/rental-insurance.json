@@ -1,0 +1,86 @@
+{
+  "title": "Rental Insurance Calculator",
+  "description": "Estimate how much rental insurance coverage you need based on your belongings and living situation.",
+  "slug": "rental-insurance",
+  "inputs": [
+    {
+      "id": "propertyValue",
+      "label": "Total Value of Personal Property",
+      "type": "number",
+      "defaultValue": 25000,
+      "required": true,
+      "min": 1000,
+      "max": 100000,
+      "step": 1000
+    },
+    {
+      "id": "location",
+      "label": "Property Location",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "label": "Urban Area",
+          "value": "urban"
+        },
+        {
+          "label": "Suburban Area",
+          "value": "suburban"
+        },
+        {
+          "label": "Rural Area",
+          "value": "rural"
+        }
+      ]
+    },
+    {
+      "id": "securityFeatures",
+      "label": "Security Features",
+      "type": "checkbox",
+      "defaultValue": false
+    },
+    {
+      "id": "valuables",
+      "label": "Do you have high-value items (jewelry, electronics, etc.)?",
+      "type": "radio",
+      "options": [
+        {
+          "label": "Yes",
+          "value": "yes"
+        },
+        {
+          "label": "No",
+          "value": "no"
+        }
+      ],
+      "defaultValue": "no"
+    },
+    {
+      "id": "liabilityCoverage",
+      "label": "Liability Coverage Amount",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "label": "$100,000",
+          "value": 100000
+        },
+        {
+          "label": "$300,000",
+          "value": 300000
+        },
+        {
+          "label": "$500,000",
+          "value": 500000
+        }
+      ],
+      "defaultValue": 300000
+    }
+  ],
+  "relatedArticles": [
+    "insurance-guides/rental-insurance"
+  ],
+  "relatedCalculators": [
+    "home-insurance"
+  ]
+}

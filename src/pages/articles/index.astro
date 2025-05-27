@@ -1,0 +1,118 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+// Get all published articles
+const allArticles = await getCollection("articles", ({ data }) => {
+  return !data.draft;
+});
+
+// Sort articles by publish date (newest first)
+const articles = allArticles.sort((a, b) => {
+  return new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime();
+});
+
+// Get featured articles
+const featuredArticles = articles.filter(article => article.data.featured);
+
+// Group articles by tags
+const tags = [...new Set(articles.flatMap(article => article.data.tags))];
+---
+
+<Layout title="Financial Articles" description="Informative articles on personal finance, insurance, savings, and more to help you make better financial decisions.">
+  <div class="container py-8">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl md:text-4xl font-bold mb-6">Financial Articles</h1>
+      
+      <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+        Explore our collection of articles on personal finance, insurance, savings, and more. Our goal is to provide clear, actionable information to help you make better financial decisions.
+      </p>
+      
+      {featuredArticles.length > 0 && (
+        <div class="mb-12">
+          <h2 class="text-2xl font-semibold mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+            Featured Articles
+          </h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {featuredArticles.map(article => (
+              <a 
+                href={`/articles/${article.slug}`}
+                class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200"
+              >
+                <div class="p-6">
+                  <h3 class="text-xl font-semibold mb-2 text-primary-600 dark:text-primary-400">
+                    {article.data.title}
+                  </h3>
+                  <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    {article.data.description}
+                  </p>
+                  <div class="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                    <span>{new Date(article.data.publishDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                    <span class="mx-2">•</span>
+                    <span>{article.data.author}</span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      <div class="space-y-12">
+        <div>
+          <h2 class="text-2xl font-semibold mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+            All Articles
+          </h2>
+          
+          <div class="space-y-6">
+            {articles.map(article => (
+              <a 
+                href={`/articles/${article.slug}`}
+                class="block bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200"
+              >
+                <h3 class="text-xl font-semibold mb-2 text-primary-600 dark:text-primary-400">
+                  {article.data.title}
+                </h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                  {article.data.description}
+                </p>
+                <div class="flex flex-wrap items-center">
+                  <div class="text-sm text-gray-500 dark:text-gray-400 mr-4">
+                    {new Date(article.data.publishDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                  </div>
+                  <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                    {article.data.tags.map(tag => (
+                      <span class="inline-block bg-gray-100 dark:bg-gray-700 rounded-full px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+        
+        {tags.length > 0 && (
+          <div class="mt-12">
+            <h2 class="text-2xl font-semibold mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+              Browse by Topic
+            </h2>
+            
+            <div class="flex flex-wrap gap-2">
+              {tags.map(tag => (
+                <a 
+                  href={`/tags/${tag}`}
+                  class="inline-block bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-200"
+                >
+                  {tag}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</Layout>

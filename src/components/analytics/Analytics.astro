@@ -1,0 +1,17 @@
+---
+// Main Analytics component that combines all analytics and ad components
+import PlausibleAnalytics from './PlausibleAnalytics.astro';
+import GoogleAdSense from './GoogleAdSense.astro';
+import EventTracking from './EventTracking.astro';
+---
+
+<>
+  <!-- Plausible Analytics -->
+  <PlausibleAnalytics />
+  
+  <!-- Google AdSense -->
+  <GoogleAdSense />
+  
+  <!-- Event Tracking -->
+  <EventTracking />
+</>

@@ -1,0 +1,193 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  canonicalUrl?: string;
+  image?: string;
+  type?: 'website' | 'article' | 'calculator';
+  publishDate?: Date;
+  updatedDate?: Date;
+  author?: string;
+  tags?: string[];
+  section?: string;
+  noIndex?: boolean;
+  breadcrumbs?: {
+    name: string;
+    url: string;
+  }[];
+}
+
+const {
+  title,
+  description,
+  canonicalUrl = Astro.url.href,
+  image = '/images/og-default.png',
+  type = 'website',
+  publishDate,
+  updatedDate,
+  author = 'GetLifeSorted Team',
+  tags = [],
+  section = '',
+  noIndex = false,
+  breadcrumbs = []
+} = Astro.props;
+
+const siteName = 'GetLifeSorted';
+const siteUrl = 'https://getlifesorted.com';
+const twitterHandle = '@getlifesorted';
+
+// Ensure image URL is absolute
+const absoluteImageUrl = image.startsWith('http')
+  ? image
+  : new URL(image, Astro.site || siteUrl).toString();
+
+// Format dates for structured data
+const formattedPublishDate = publishDate ? publishDate.toISOString() : null;
+const formattedUpdatedDate = updatedDate ? updatedDate.toISOString() : null;
+
+// Generate JSON-LD structured data based on content type
+let structuredData = {};
+
+// Base website structured data
+structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": siteName,
+  "url": siteUrl,
+  "description": "Financial tools, calculators, and informative articles to help you get your life sorted."
+};
+
+// Add breadcrumbs structured data if provided
+if (breadcrumbs.length > 0) {
+  const breadcrumbsData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": breadcrumbs.map((crumb, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "name": crumb.name,
+      "item": new URL(crumb.url, Astro.site || siteUrl).toString()
+    }))
+  };
+  structuredData = [structuredData, breadcrumbsData];
+}
+
+// Add article structured data if type is article
+if (type === 'article' && formattedPublishDate) {
+  const articleData = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": title,
+    "image": [absoluteImageUrl],
+    "datePublished": formattedPublishDate,
+    "dateModified": formattedUpdatedDate || formattedPublishDate,
+    "author": {
+      "@type": "Person",
+      "name": author
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": siteName,
+      "logo": {
+        "@type": "ImageObject",
+        "url": new URL("/favicon.svg", Astro.site || siteUrl).toString()
+      }
+    },
+    "description": description,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": canonicalUrl
+    },
+    "keywords": tags.join(", ")
+  };
+  
+  structuredData = Array.isArray(structuredData)
+    ? [...structuredData, articleData]
+    : [structuredData, articleData];
+}
+
+// Add calculator structured data if type is calculator
+if (type === 'calculator') {
+  const calculatorData = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": title,
+    "applicationCategory": "FinanceTool",
+    "operatingSystem": "Web",
+    "description": description,
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  };
+  
+  structuredData = Array.isArray(structuredData)
+    ? [...structuredData, calculatorData]
+    : [structuredData, calculatorData];
+}
+---
+
+<!-- Primary Meta Tags -->
+<title>{title} | {siteName}</title>
+<meta name="title" content={`${title} | ${siteName}`} />
+<meta name="description" content={description} />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalUrl} />
+
+<!-- Indexing Control -->
+{noIndex && (
+  <meta name="robots" content="noindex, nofollow" />
+)}
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={type === 'article' ? 'article' : 'website'} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={`${title} | ${siteName}`} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={absoluteImageUrl} />
+<meta property="og:site_name" content={siteName} />
+{type === 'article' && publishDate && (
+  <meta property="article:published_time" content={formattedPublishDate} />
+)}
+{type === 'article' && updatedDate && (
+  <meta property="article:modified_time" content={formattedUpdatedDate} />
+)}
+{type === 'article' && section && (
+  <meta property="article:section" content={section} />
+)}
+{type === 'article' && tags.map(tag => (
+  <meta property="article:tag" content={tag} />
+))}
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content={twitterHandle} />
+<meta name="twitter:url" content={canonicalUrl} />
+<meta name="twitter:title" content={`${title} | ${siteName}`} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={absoluteImageUrl} />
+{author && (
+  <meta name="twitter:creator" content={author} />
+)}
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="manifest" href="/site.webmanifest" />
+
+<!-- Additional Meta -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Structured Data -->
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+<!-- Resource Hints -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+<link rel="dns-prefetch" href="https://fonts.gstatic.com" />

@@ -1,0 +1,114 @@
+---
+interface Props {
+  title: string;
+  results: {
+    label: string;
+    value: string | number;
+    type?: 'currency' | 'percentage' | 'text' | 'number';
+    description?: string;
+  }[];
+  showPrintButton?: boolean;
+  showShareButton?: boolean;
+}
+
+const { 
+  title, 
+  results = [], 
+  showPrintButton = true,
+  showShareButton = true
+} = Astro.props;
+
+// Format values based on type
+const formatValue = (value: string | number, type: string = 'text') => {
+  if (type === 'currency') {
+    return new Intl.NumberFormat('en-US', { 
+      style: 'currency', 
+      currency: 'USD',
+      maximumFractionDigits: 0
+    }).format(Number(value));
+  } else if (type === 'percentage') {
+    return `${Number(value).toFixed(1)}%`;
+  } else if (type === 'number') {
+    return new Intl.NumberFormat('en-US').format(Number(value));
+  }
+  return value;
+};
+---
+
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mt-6">
+  <h3 class="text-xl font-semibold mb-4">{title}</h3>
+  
+  {results.length > 0 ? (
+    <div class="space-y-4">
+      {results.map((result) => (
+        <div class="border-b border-gray-200 dark:border-gray-700 pb-3 last:border-0 last:pb-0">
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600 dark:text-gray-400">{result.label}</span>
+            <span class="font-semibold text-lg">
+              {formatValue(result.value, result.type)}
+            </span>
+          </div>
+          {result.description && (
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{result.description}</p>
+          )}
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p class="text-gray-500 dark:text-gray-400">Complete the form to see your results.</p>
+  )}
+  
+  {(showPrintButton || showShareButton) && (
+    <div class="flex justify-end gap-3 mt-6">
+      {showShareButton && (
+        <button 
+          id="share-button"
+          class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+          Share
+        </button>
+      )}
+      
+      {showPrintButton && (
+        <button 
+          id="print-button"
+          class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          Print
+        </button>
+      )}
+    </div>
+  )}
+</div>
+
+<script>
+  // Print functionality
+  document.getElementById('print-button')?.addEventListener('click', () => {
+    window.print();
+  });
+  
+  // Share functionality
+  document.getElementById('share-button')?.addEventListener('click', () => {
+    // Get current URL with parameters
+    const shareUrl = window.location.href;
+    
+    // Use Web Share API if available
+    if (navigator.share) {
+      navigator.share({
+        title: document.title,
+        url: shareUrl
+      }).catch(console.error);
+    } else {
+      // Fallback to copying to clipboard
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        alert('Link copied to clipboard!');
+      }).catch(console.error);
+    }
+  });
+</script>

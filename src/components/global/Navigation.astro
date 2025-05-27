@@ -1,0 +1,52 @@
+---
+const pathname = new URL(Astro.request.url).pathname;
+const isActive = (path: string) => {
+  if (path === '/' && pathname !== '/') return false;
+  return pathname.startsWith(path);
+};
+---
+
+<nav class="hidden md:block">
+  <ul class="flex space-x-8">
+    <li>
+      <a 
+        href="/" 
+        class={`${isActive('/') ? 'text-primary-600 dark:text-primary-400 font-medium' : 'text-gray-700 dark:text-gray-300'} hover:text-primary-600 dark:hover:text-primary-400`}
+      >
+        Home
+      </a>
+    </li>
+    <li>
+      <a 
+        href="/calculators" 
+        class={`${isActive('/calculators') ? 'text-primary-600 dark:text-primary-400 font-medium' : 'text-gray-700 dark:text-gray-300'} hover:text-primary-600 dark:hover:text-primary-400`}
+      >
+        Calculators
+      </a>
+    </li>
+    <li>
+      <a
+        href="/articles"
+        class={`${isActive('/articles') ? 'text-primary-600 dark:text-primary-400 font-medium' : 'text-gray-700 dark:text-gray-300'} hover:text-primary-600 dark:hover:text-primary-400`}
+      >
+        Articles
+      </a>
+    </li>
+    <li>
+      <a
+        href="/guides"
+        class={`${isActive('/guides') ? 'text-primary-600 dark:text-primary-400 font-medium' : 'text-gray-700 dark:text-gray-300'} hover:text-primary-600 dark:hover:text-primary-400`}
+      >
+        Guides
+      </a>
+    </li>
+    <li>
+      <a 
+        href="/about" 
+        class={`${isActive('/about') ? 'text-primary-600 dark:text-primary-400 font-medium' : 'text-gray-700 dark:text-gray-300'} hover:text-primary-600 dark:hover:text-primary-400`}
+      >
+        About
+      </a>
+    </li>
+  </ul>
+</nav>

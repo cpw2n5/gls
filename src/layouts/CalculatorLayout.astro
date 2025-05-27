@@ -1,0 +1,58 @@
+---
+import Layout from "./Layout.astro";
+import AdUnit from "../components/global/AdUnit.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  showAds?: boolean;
+}
+
+const { 
+  title, 
+  description, 
+  showAds = true 
+} = Astro.props;
+---
+
+<Layout
+  title={title}
+  description={description}
+  type="calculator"
+  breadcrumbs={[
+    { name: "Home", url: "/" },
+    { name: "Calculators", url: "/calculators" },
+    { name: title, url: Astro.url.pathname }
+  ]}
+>
+  <div class="container py-8">
+    <h1 class="text-3xl font-bold mb-6">{title}</h1>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2">
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <slot />
+        </div>
+        
+        {showAds && (
+          <div class="mt-8">
+            <AdUnit type="in-content" />
+          </div>
+        )}
+      </div>
+      
+      <div class="space-y-6">
+        {showAds && (
+          <div>
+            <AdUnit type="sidebar" />
+          </div>
+        )}
+        
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <h2 class="text-xl font-semibold mb-4">Related Calculators</h2>
+          <slot name="related" />
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,90 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+// Get all calculator configurations
+const calculators = await getCollection("calculators");
+
+// Group calculators by category (for future use)
+const categories = [
+  {
+    name: "Insurance",
+    calculators: calculators.filter(calc => 
+      calc.id.includes("insurance") || 
+      calc.data.title.toLowerCase().includes("insurance")
+    )
+  },
+  {
+    name: "Savings",
+    calculators: calculators.filter(calc => 
+      calc.id.includes("savings") || 
+      calc.data.title.toLowerCase().includes("savings")
+    )
+  }
+];
+
+// Add any remaining calculators to an "Other" category
+const otherCalculators = calculators.filter(calc => 
+  !categories.some(category => 
+    category.calculators.some(c => c.id === calc.id)
+  )
+);
+
+if (otherCalculators.length > 0) {
+  categories.push({
+    name: "Other",
+    calculators: otherCalculators
+  });
+}
+---
+
+<Layout title="Financial Calculators" description="Free financial calculators to help you make informed decisions about insurance, savings, investments, and more.">
+  <div class="container py-8">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl md:text-4xl font-bold mb-6">Financial Calculators</h1>
+      
+      <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+        Use our free calculators to help you make informed financial decisions. From insurance needs to retirement planning, our tools provide personalized insights based on your specific situation.
+      </p>
+      
+      <div class="space-y-12">
+        {categories.map(category => (
+          <div>
+            <h2 class="text-2xl font-semibold mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+              {category.name} Calculators
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {category.calculators.map(calculator => (
+                <a 
+                  href={`/calculators/${calculator.data.slug}`}
+                  class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200"
+                >
+                  <h3 class="text-xl font-semibold mb-2 text-primary-600 dark:text-primary-400">
+                    {calculator.data.title}
+                  </h3>
+                  <p class="text-gray-600 dark:text-gray-400">
+                    {calculator.data.description}
+                  </p>
+                  <div class="mt-4 text-primary-600 dark:text-primary-400 font-medium">
+                    Use Calculator →
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      <div class="mt-12 bg-primary-50 dark:bg-gray-800 rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-2">Need Help?</h2>
+        <p class="text-gray-600 dark:text-gray-400 mb-4">
+          Our calculators are designed to be easy to use, but if you need help understanding the results or have questions about your financial situation, check out our related articles.
+        </p>
+        <a href="/articles" class="text-primary-600 dark:text-primary-400 font-medium hover:underline">
+          Browse Financial Articles →
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

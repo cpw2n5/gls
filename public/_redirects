@@ -1,0 +1,9 @@
+# Redirect www to non-www
+https://www.getlifesorted.com/* https://getlifesorted.com/:splat 301!
+
+# Redirect old paths to new paths if needed
+# /old-path /new-path 301
+# /legacy-calculator /calculators/rental-insurance 301
+
+# Handle 404s
+/* /404.html 404

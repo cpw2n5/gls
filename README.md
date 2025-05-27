@@ -1,0 +1,107 @@
+# GetLifeSorted.com
+
+A comprehensive personal finance and life management website built with Astro, providing articles, guides, and calculators to help users organize their finances and life decisions.
+
+## 🚀 Project Overview
+
+GetLifeSorted.com is designed to provide valuable resources for:
+- Personal finance management
+- Life planning and organization
+- Financial calculators and tools
+- Educational articles and guides
+
+### Project Goals
+
+GetLifeSorted.com aims to:
+1. **Simplify Financial Decisions** - Provide easy-to-use calculators and tools that help users make informed financial decisions
+2. **Educate Users** - Offer comprehensive guides and articles on personal finance topics
+3. **Build Financial Literacy** - Create accessible content for users at all levels of financial knowledge
+4. **Provide Actionable Advice** - Focus on practical, implementable steps rather than theoretical concepts
+5. **Maintain Privacy** - Respect user privacy with minimal data collection and transparent practices
+
+## 📁 Project Structure
+
+```text
+/
+├── public/             # Static assets
+├── src/
+│   ├── assets/         # Project assets (images, etc.)
+│   ├── components/     # Reusable UI components
+│   │   ├── analytics/  # Analytics components
+│   │   ├── calculators/# Calculator components
+│   │   └── global/     # Global UI components
+│   ├── config/         # Site configuration
+│   ├── content/        # Content collections
+│   │   ├── articles/   # Blog articles
+│   │   ├── calculators/# Calculator data
+│   │   └── guides/     # Educational guides
+│   ├── docs/           # Internal documentation
+│   ├── layouts/        # Page layouts
+│   ├── pages/          # Site pages
+│   ├── styles/         # Global styles
+│   └── types/          # TypeScript type definitions
+└── package.json
+```
+
+## 🧞 Commands
+
+All commands are run from the root of the project, from a terminal:
+
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `npm install`             | Installs dependencies                            |
+| `npm run dev`             | Starts local dev server at `localhost:4321`      |
+| `npm run build`           | Build your production site to `./dist/`          |
+| `npm run preview`         | Preview your build locally, before deploying     |
+| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
+
+## 🚢 Deployment
+
+This project is deployed using Cloudflare Pages with GitHub integration. See the [deployment documentation](./src/docs/deployment.md) for details on:
+- GitHub repository configuration
+- Cloudflare Pages setup
+- Custom domain configuration
+- CI/CD workflow
+
+## 🔒 Environment Variables
+
+The following environment variables are required for production deployment:
+
+```
+# Analytics
+PLAUSIBLE_DOMAIN=getlifesorted.com
+GOOGLE_ANALYTICS_ID=G-XXXXXXXXXX
+
+# API Keys (if applicable)
+API_KEY=xxxxxxxxxxxx
+```
+
+## 📚 Documentation
+
+Comprehensive documentation is available to help you understand, use, and contribute to GetLifeSorted.com:
+
+- [Documentation Index](./src/docs/index.md) - Central hub for all documentation
+- [Content Templating Guide](./src/docs/content-templating-guide.md) - How to create articles and guides
+- [Calculator Usage](./src/docs/calculator-usage.md) - How to create and use calculators
+- [Analytics & Ads Integration](./src/docs/analytics-ads-integration.md) - Setting up analytics and ads
+- [SEO Guidelines](./src/docs/seo-guidelines.md) - Best practices for SEO
+- [Deployment Guide](./src/docs/deployment.md) - How to deploy the site
+
+## 🧩 Component Library
+
+GetLifeSorted.com uses a custom component library built with Astro components. These components are designed to be reusable, accessible, and consistent with the site's design language. See the [Component Library Documentation](./src/docs/component-library.md) for details.
+
+## 🔄 Development Workflow
+
+1. Clone the repository
+2. Install dependencies with `npm install`
+3. Copy `.env.example` to `.env` and configure environment variables
+4. Run the development server with `npm run dev`
+5. Make changes and test locally
+6. Commit changes and push to GitHub
+7. Create a pull request for review
+8. Once approved, changes will be automatically deployed
+
+## 📝 License
+
+Copyright © 2025 GetLifeSorted.com. All rights reserved.

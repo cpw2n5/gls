@@ -1,0 +1,71 @@
+---
+import ArticleLayout from "../../layouts/ArticleLayout.astro";
+import { getCollection } from "astro:content";
+
+// Generate static paths for all articles
+export async function getStaticPaths() {
+  const articles = await getCollection("articles");
+  
+  return articles.map(article => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+// Get the article data from props
+const { article } = Astro.props;
+const { Content } = await article.render();
+
+// Get related articles based on tags
+const allArticles = await getCollection("articles", ({ data }) => {
+  return !data.draft && data.tags.some(tag => article.data.tags.includes(tag)) && article.slug !== data.slug;
+});
+
+// Sort by publish date and limit to 3
+const relatedArticles = allArticles
+  .sort((a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime())
+  .slice(0, 3);
+---
+
+<ArticleLayout
+  title={article.data.title}
+  description={article.data.description}
+  publishDate={article.data.publishDate}
+  updatedDate={article.data.updatedDate}
+  author={article.data.author}
+  image={article.data.image}
+  tags={article.data.tags || []}
+>
+  <div class="prose prose-lg dark:prose-invert max-w-none">
+    <Content />
+  </div>
+  
+  <Fragment slot="related">
+    {relatedArticles.length > 0 ? (
+      <ul class="space-y-4">
+        {relatedArticles.map(related => (
+          <li>
+            <a 
+              href={`/articles/${related.slug}`}
+              class="block hover:bg-gray-50 dark:hover:bg-gray-700 p-2 -m-2 rounded-lg transition-colors duration-200"
+            >
+              <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-1">
+                {related.data.title}
+              </h4>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                {related.data.description.length > 100 
+                  ? related.data.description.substring(0, 100) + '...' 
+                  : related.data.description
+                }
+              </p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="text-gray-600 dark:text-gray-400 text-sm">
+        No related articles found.
+      </p>
+    )}
+  </Fragment>
+</ArticleLayout>

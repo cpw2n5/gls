@@ -1,0 +1,39 @@
+---
+import { adsenseConfig, shouldLoadAds } from '../../config/analytics';
+
+// Only load if ads should be loaded (based on environment and config)
+const loadAds = shouldLoadAds();
+---
+
+{loadAds && (
+  <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseConfig.clientId}`} crossorigin="anonymous"></script>
+)}
+
+<script>
+  // Listen for consent updates
+  window.addEventListener('consentUpdated', (event) => {
+    const { ads } = (event as CustomEvent).detail;
+    
+    // If ads consent is given but AdSense script isn't loaded yet
+    if (ads && !document.querySelector('script[src*="adsbygoogle.js"]')) {
+      // Dynamically add the AdSense script
+      const script = document.createElement('script');
+      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseConfig.clientId}`;
+      script.async = true;
+      script.crossOrigin = "anonymous";
+      document.head.appendChild(script);
+      
+      // Initialize any existing ad units
+      script.onload = () => {
+        const adElements = document.querySelectorAll('.adsbygoogle');
+        adElements.forEach(ad => {
+          try {
+            (window.adsbygoogle = window.adsbygoogle || []).push({});
+          } catch (e) {
+            console.error('AdSense error:', e);
+          }
+        });
+      };
+    }
+  });
+</script>

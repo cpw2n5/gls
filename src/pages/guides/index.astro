@@ -1,0 +1,254 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import AdUnit from "../../components/global/AdUnit.astro";
+// Replace Icon import with standard SVG icons
+
+// Get all published guides
+const allGuides = await getCollection("guides", ({ data }) => {
+  return !data.draft;
+});
+
+// Sort guides by publish date (newest first)
+const guides = allGuides.sort((a, b) => {
+  return new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime();
+});
+
+// Get featured guides
+const featuredGuides = guides.filter(guide => guide.data.featured);
+
+// Group guides by difficulty
+const beginnerGuides = guides.filter(guide => guide.data.difficulty === 'beginner');
+const intermediateGuides = guides.filter(guide => guide.data.difficulty === 'intermediate');
+const advancedGuides = guides.filter(guide => guide.data.difficulty === 'advanced');
+
+// Group guides by tags
+const tags = [...new Set(guides.flatMap(guide => guide.data.tags))];
+
+// Calculate reading time for each guide
+function calculateReadingTime(content: string) {
+  const WORDS_PER_MINUTE = 200;
+  const wordCount = content.split(/\s+/).length;
+  return Math.max(1, Math.ceil(wordCount / WORDS_PER_MINUTE));
+}
+---
+
+<Layout title="Financial Guides" description="Comprehensive guides on personal finance, budgeting, investing, and more to help you make better financial decisions.">
+  <div class="container py-8">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl md:text-4xl font-bold mb-6">Financial Guides</h1>
+      
+      <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+        Our comprehensive guides provide in-depth information and step-by-step instructions on various financial topics. Whether you're just starting your financial journey or looking to optimize your existing strategy, we have resources to help you succeed.
+      </p>
+      
+      {featuredGuides.length > 0 && (
+        <div class="mb-12">
+          <h2 class="text-2xl font-semibold mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+            Featured Guides
+          </h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {featuredGuides.map(guide => (
+              <a 
+                href={`/guides/${guide.slug}`}
+                class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200"
+              >
+                {guide.data.image && (
+                  <div class="h-48 overflow-hidden">
+                    <img 
+                      src={guide.data.image} 
+                      alt={guide.data.title} 
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                <div class="p-6">
+                  <div class="flex items-center mb-2">
+                    <span class={`inline-block rounded-full px-2 py-1 text-xs font-medium mr-2 ${
+                      guide.data.difficulty === 'beginner' 
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                        : guide.data.difficulty === 'intermediate'
+                          ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                          : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                    }`}>
+                      {guide.data.difficulty.charAt(0).toUpperCase() + guide.data.difficulty.slice(1)}
+                    </span>
+                    <span class="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {calculateReadingTime(guide.body)} min read
+                    </span>
+                  </div>
+                  <h3 class="text-xl font-semibold mb-2 text-primary-600 dark:text-primary-400">
+                    {guide.data.title}
+                  </h3>
+                  <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    {guide.data.description}
+                  </p>
+                  <div class="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                    <span>{new Date(guide.data.publishDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                    <span class="mx-2">•</span>
+                    <span>{guide.data.author}</span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      {/* Add banner ad between featured guides and categorized guides */}
+      <div class="my-8">
+        <AdUnit type="banner" className="mx-auto" />
+      </div>
+      
+      <div class="space-y-12">
+        {beginnerGuides.length > 0 && (
+          <div>
+            <h2 class="text-2xl font-semibold mb-4 border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center">
+              <span class="inline-block bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full w-6 h-6 flex items-center justify-center mr-2 text-sm">B</span>
+              Beginner Guides
+            </h2>
+            
+            <div class="space-y-6">
+              {beginnerGuides.map(guide => (
+                <a 
+                  href={`/guides/${guide.slug}`}
+                  class="block bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200"
+                >
+                  <h3 class="text-xl font-semibold mb-2 text-primary-600 dark:text-primary-400">
+                    {guide.data.title}
+                  </h3>
+                  <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    {guide.data.description}
+                  </p>
+                  <div class="flex flex-wrap items-center">
+                    <div class="flex items-center text-sm text-gray-500 dark:text-gray-400 mr-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {calculateReadingTime(guide.body)} min read
+                    </div>
+                    <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                      {guide.data.tags.map(tag => (
+                        <span class="inline-block bg-gray-100 dark:bg-gray-700 rounded-full px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {intermediateGuides.length > 0 && (
+          <div>
+            <h2 class="text-2xl font-semibold mb-4 border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center">
+              <span class="inline-block bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 rounded-full w-6 h-6 flex items-center justify-center mr-2 text-sm">I</span>
+              Intermediate Guides
+            </h2>
+            
+            <div class="space-y-6">
+              {intermediateGuides.map(guide => (
+                <a 
+                  href={`/guides/${guide.slug}`}
+                  class="block bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200"
+                >
+                  <h3 class="text-xl font-semibold mb-2 text-primary-600 dark:text-primary-400">
+                    {guide.data.title}
+                  </h3>
+                  <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    {guide.data.description}
+                  </p>
+                  <div class="flex flex-wrap items-center">
+                    <div class="flex items-center text-sm text-gray-500 dark:text-gray-400 mr-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {calculateReadingTime(guide.body)} min read
+                    </div>
+                    <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                      {guide.data.tags.map(tag => (
+                        <span class="inline-block bg-gray-100 dark:bg-gray-700 rounded-full px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {advancedGuides.length > 0 && (
+          <div>
+            <h2 class="text-2xl font-semibold mb-4 border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center">
+              <span class="inline-block bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded-full w-6 h-6 flex items-center justify-center mr-2 text-sm">A</span>
+              Advanced Guides
+            </h2>
+            
+            <div class="space-y-6">
+              {advancedGuides.map(guide => (
+                <a 
+                  href={`/guides/${guide.slug}`}
+                  class="block bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200"
+                >
+                  <h3 class="text-xl font-semibold mb-2 text-primary-600 dark:text-primary-400">
+                    {guide.data.title}
+                  </h3>
+                  <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    {guide.data.description}
+                  </p>
+                  <div class="flex flex-wrap items-center">
+                    <div class="flex items-center text-sm text-gray-500 dark:text-gray-400 mr-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {calculateReadingTime(guide.body)} min read
+                    </div>
+                    <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                      {guide.data.tags.map(tag => (
+                        <span class="inline-block bg-gray-100 dark:bg-gray-700 rounded-full px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {tags.length > 0 && (
+          <div class="mt-12">
+            <h2 class="text-2xl font-semibold mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+              Browse by Topic
+            </h2>
+            
+            <div class="flex flex-wrap gap-2">
+              {tags.map(tag => (
+                <a 
+                  href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`}
+                  class="inline-block bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-200"
+                >
+                  {tag}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Add in-content ad at the bottom of the page */}
+        <div class="mt-12">
+          <AdUnit type="in-content" className="mx-auto" />
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

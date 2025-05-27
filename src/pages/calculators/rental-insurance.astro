@@ -1,0 +1,178 @@
+---
+import CalculatorLayout from "../../layouts/CalculatorLayout.astro";
+import CalculatorWidget from "../../components/calculators/CalculatorWidget.astro";
+import { getEntry } from "astro:content";
+
+// Get calculator configuration from content collection
+const calculatorData = await getEntry("calculators", "rental-insurance");
+const { title, description, inputs } = calculatorData.data;
+
+// Enhance inputs with help text
+const enhancedInputs = inputs.map(input => {
+  // Add help text for specific fields
+  if (input.id === "propertyValue") {
+    return {
+      ...input,
+      helpText: "Include furniture, electronics, clothing, and other personal items"
+    };
+  }
+  if (input.id === "valuables") {
+    return {
+      ...input,
+      helpText: "High-value items may require additional coverage"
+    };
+  }
+  if (input.id === "liabilityCoverage") {
+    return {
+      ...input,
+      helpText: "Covers legal expenses if someone is injured in your home"
+    };
+  }
+  return input;
+});
+
+// Get related articles if they exist
+const relatedArticles = calculatorData.data.relatedArticles || [];
+const relatedCalculators = calculatorData.data.relatedCalculators || [];
+
+// Initial empty results
+const initialResults = [];
+---
+
+<CalculatorLayout title={title} description={description}>
+  <div class="space-y-8">
+    <CalculatorWidget
+      id="rental-insurance"
+      title={title}
+      description="Use this calculator to estimate how much rental insurance coverage you need and what it might cost. Enter your information below to get started."
+      inputs={enhancedInputs}
+      initialResults={initialResults}
+      calculationFunction="calculateRentalInsurance"
+    />
+    
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+      <h3 class="text-xl font-semibold mb-4">About Rental Insurance</h3>
+      <div class="prose prose-sm dark:prose-invert max-w-none">
+        <p>
+          Rental insurance (also known as renter's insurance) provides coverage for your personal belongings in a rented property and liability protection in case someone is injured while in your home.
+        </p>
+        <h4>What Rental Insurance Typically Covers:</h4>
+        <ul>
+          <li><strong>Personal Property:</strong> Covers your belongings against theft, fire, and other covered perils</li>
+          <li><strong>Liability Protection:</strong> Covers legal expenses if someone is injured in your home</li>
+          <li><strong>Additional Living Expenses:</strong> Covers hotel stays and meals if your rental becomes uninhabitable</li>
+          <li><strong>Medical Payments:</strong> Covers medical expenses for guests injured in your home</li>
+        </ul>
+        <p>
+          Most rental insurance policies are affordable, typically costing between $15-30 per month depending on your location, coverage amount, and other factors.
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <Fragment slot="related">
+    <ul class="space-y-2">
+      {relatedCalculators.map((calc) => (
+        <li>
+          <a href={`/calculators/${calc}`} class="text-primary-600 dark:text-primary-400 hover:underline">
+            Home Insurance Calculator
+          </a>
+        </li>
+      ))}
+    </ul>
+    
+    <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <h4 class="font-medium mb-2">Related Articles</h4>
+      <ul class="space-y-2">
+        {relatedArticles.map((article) => (
+          <li>
+            <a href={`/articles/${article}`} class="text-primary-600 dark:text-primary-400 hover:underline">
+              Rental Insurance Guide
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </Fragment>
+</CalculatorLayout>
+
+<script>
+  /**
+   * Calculate rental insurance recommendations based on form inputs
+   * @param {Object} formData - The form data object
+   * @returns {Array} Array of result objects
+   */
+  window.calculateRentalInsurance = function(formData) {
+    // Extract form values
+    const propertyValue = Number(formData.propertyValue) || 25000;
+    const location = formData.location || 'suburban';
+    const hasSecurityFeatures = Boolean(formData.securityFeatures);
+    const hasValuables = formData.valuables === 'yes';
+    const liabilityCoverage = Number(formData.liabilityCoverage) || 300000;
+    
+    // Calculate recommended coverage (typically property value + 10-20%)
+    let recommendedCoverage = propertyValue;
+    
+    // Add additional coverage for high-value items
+    if (hasValuables) {
+      recommendedCoverage += 5000; // Add $5,000 for high-value items
+    }
+    
+    // Calculate estimated monthly premium
+    // Base rate depends on location (urban areas typically cost more)
+    let baseRate = 0;
+    switch (location) {
+      case 'urban':
+        baseRate = 0.0007; // $0.70 per $1,000 of coverage
+        break;
+      case 'suburban':
+        baseRate = 0.0006; // $0.60 per $1,000 of coverage
+        break;
+      case 'rural':
+        baseRate = 0.0005; // $0.50 per $1,000 of coverage
+        break;
+      default:
+        baseRate = 0.0006;
+    }
+    
+    // Calculate monthly premium
+    let monthlyPremium = (recommendedCoverage * baseRate) + (liabilityCoverage * 0.0000005);
+    
+    // Apply discount for security features
+    if (hasSecurityFeatures) {
+      monthlyPremium *= 0.9; // 10% discount
+    }
+    
+    // Calculate premium range (±15%)
+    const minPremium = Math.round(monthlyPremium * 0.85);
+    const maxPremium = Math.round(monthlyPremium * 1.15);
+    
+    // Return results
+    return [
+      {
+        label: "Estimated Monthly Premium",
+        value: `${minPremium}-${maxPremium}`,
+        type: "text",
+        description: "Based on your location and property value"
+      },
+      {
+        label: "Recommended Coverage",
+        value: recommendedCoverage,
+        type: "currency",
+        description: "Personal property coverage amount"
+      },
+      {
+        label: "Liability Coverage",
+        value: liabilityCoverage,
+        type: "currency",
+        description: "Covers legal expenses if someone is injured in your home"
+      },
+      {
+        label: "Deductible Recommendation",
+        value: Math.min(1000, Math.round(recommendedCoverage * 0.01 / 100) * 100),
+        type: "currency",
+        description: "Amount you pay out-of-pocket before insurance covers a claim"
+      }
+    ];
+  }
+</script>

@@ -1,0 +1,206 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AdUnit from '../components/global/AdUnit.astro';
+---
+
+<Layout title="Home" description="Financial tools, calculators, and informative articles to help you get your life sorted.">
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-br from-primary-700 to-primary-900 text-white py-16">
+    <div class="container">
+      <div class="max-w-3xl mx-auto text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">Get Your Life Sorted</h1>
+        <p class="text-xl mb-8">
+          Simple financial tools and straightforward advice to help you make informed decisions.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="/calculators" class="bg-white text-primary-700 hover:bg-gray-100 px-6 py-3 rounded-lg font-medium">
+            Explore Calculators
+          </a>
+          <a href="/articles" class="bg-transparent border border-white hover:bg-white/10 px-6 py-3 rounded-lg font-medium">
+            Read Articles
+          </a>
+          <a href="/guides" class="bg-transparent border border-white hover:bg-white/10 px-6 py-3 rounded-lg font-medium">
+            Browse Guides
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Calculators -->
+  <section class="py-16 bg-gray-50 dark:bg-gray-800">
+    <div class="container">
+      <h2 class="text-3xl font-bold mb-8 text-center">Financial Calculators</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- These are placeholder calculators based on the architecture plan -->
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md overflow-hidden">
+          <div class="p-6">
+            <h3 class="text-xl font-semibold mb-2">Rental Insurance Calculator</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+              Estimate how much rental insurance coverage you need based on your belongings.
+            </p>
+            <a href="/calculators/rental-insurance" class="text-primary-600 dark:text-primary-400 font-medium hover:underline">
+              Calculate Now →
+            </a>
+          </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md overflow-hidden">
+          <div class="p-6">
+            <h3 class="text-xl font-semibold mb-2">Home Insurance Calculator</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+              Determine the right amount of home insurance coverage for your property.
+            </p>
+            <a href="/calculators/home-insurance" class="text-primary-600 dark:text-primary-400 font-medium hover:underline">
+              Calculate Now →
+            </a>
+          </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md overflow-hidden">
+          <div class="p-6">
+            <h3 class="text-xl font-semibold mb-2">Retirement Savings Calculator</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+              Plan your retirement by calculating how much you need to save.
+            </p>
+            <a href="/calculators/retirement-savings" class="text-primary-600 dark:text-primary-400 font-medium hover:underline">
+              Calculate Now →
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-8">
+        <a href="/calculators" class="inline-block bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium">
+          View All Calculators
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Guides -->
+  <section class="py-16 bg-white dark:bg-gray-900">
+    <div class="container">
+      <h2 class="text-3xl font-bold mb-8 text-center">Comprehensive Guides</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+          <div class="p-6">
+            <div class="flex items-center mb-3">
+              <span class="inline-block bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full px-3 py-1 text-xs font-medium mr-2">
+                Beginner
+              </span>
+              <span class="text-sm text-gray-500 dark:text-gray-400">20 min read</span>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">First Job Budgeting</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+              A comprehensive guide to creating and managing your first budget after landing your first job, with practical tips for saving, spending, and planning for the future.
+            </p>
+            <a href="/guides/first-job-budgeting" class="text-primary-600 dark:text-primary-400 font-medium hover:underline">
+              Read Guide →
+            </a>
+          </div>
+        </div>
+        
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+          <div class="p-6">
+            <div class="flex items-center mb-3">
+              <span class="inline-block bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 rounded-full px-3 py-1 text-xs font-medium mr-2">
+                Intermediate
+              </span>
+              <span class="text-sm text-gray-500 dark:text-gray-400">30 min read</span>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Estate Planning Essentials</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+              A comprehensive guide to estate planning, including wills, trusts, power of attorney, and other essential documents to protect your assets and provide for your loved ones.
+            </p>
+            <a href="/guides/estate-planning" class="text-primary-600 dark:text-primary-400 font-medium hover:underline">
+              Read Guide →
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-8">
+        <a href="/guides" class="inline-block bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium">
+          View All Guides
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Articles -->
+  <section class="py-16 bg-gray-50 dark:bg-gray-800">
+    <div class="container">
+      <h2 class="text-3xl font-bold mb-8 text-center">Latest Articles</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- These are placeholder articles based on the architecture plan -->
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md overflow-hidden">
+          <div class="p-6">
+            <h3 class="text-xl font-semibold mb-2">Your First Bank Account</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+              Everything you need to know about opening and managing your first bank account.
+            </p>
+            <a href="/articles/first-bank-account" class="text-primary-600 dark:text-primary-400 font-medium hover:underline">
+              Read More →
+            </a>
+          </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md overflow-hidden">
+          <div class="p-6">
+            <h3 class="text-xl font-semibold mb-2">Credit Card Application Guide</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+              How to choose and apply for your first credit card with confidence.
+            </p>
+            <a href="/articles/credit-card-application" class="text-primary-600 dark:text-primary-400 font-medium hover:underline">
+              Read More →
+            </a>
+          </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md overflow-hidden">
+          <div class="p-6">
+            <h3 class="text-xl font-semibold mb-2">Rental Insurance Guide</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+              Why rental insurance matters and how to choose the right coverage.
+            </p>
+            <a href="/articles/insurance-guides/rental-insurance" class="text-primary-600 dark:text-primary-400 font-medium hover:underline">
+              Read More →
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-8">
+        <a href="/articles" class="inline-block bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium">
+          View All Articles
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ad Section -->
+  <section class="py-8 bg-gray-50 dark:bg-gray-800">
+    <div class="container">
+      <AdUnit type="banner" className="mx-auto" />
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="py-16 bg-primary-50 dark:bg-gray-900">
+    <div class="container">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-4">Ready to Get Your Life Sorted?</h2>
+        <p class="text-xl mb-8">
+          Start using our free calculators today to make better financial decisions.
+        </p>
+        <a href="/calculators" class="inline-block bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-lg font-medium text-lg">
+          Get Started Now
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
