@@ -48,6 +48,7 @@ const adFormat = type === 'in-content' ? 'auto' : '';
       data-ad-format={adFormat}
       data-full-width-responsive="true"
       data-adtest={adsenseConfig.testMode ? "on" : "off"}
+      loading="lazy"
     ></ins>
   ) : (
     <div class="text-center text-gray-500 dark:text-gray-400">
@@ -58,40 +59,26 @@ const adFormat = type === 'in-content' ? 'auto' : '';
 </div>
 
 <script>
-  // Check if consent is given for ads
-  function hasAdsConsent() {
-    return window.glsConsent?.hasAdsConsent() || false;
-  }
-
-  // Initialize AdSense ads
-  function initializeAds() {
-    // Only initialize if consent is given
-    if (hasAdsConsent()) {
-      const adElements = document.querySelectorAll('.adsbygoogle');
-      adElements.forEach(ad => {
-        try {
-          (window.adsbygoogle = window.adsbygoogle || []).push({});
-        } catch (e) {
-          console.error('AdSense error:', e);
+  // Register this ad unit with the central AdSense manager
+  function registerAdUnit() {
+    const adElement = document.currentScript?.previousElementSibling?.querySelector('.adsbygoogle');
+    
+    if (!adElement) return;
+    
+    // Check if the global AdSense manager exists
+    if (window.glsAdSense) {
+      // Register this ad unit with the manager
+      window.glsAdSense.registerAdUnit(adElement);
+    } else {
+      // If the AdSense manager isn't loaded yet, wait for it
+      window.addEventListener('DOMContentLoaded', () => {
+        if (window.glsAdSense) {
+          window.glsAdSense.registerAdUnit(adElement);
         }
       });
     }
   }
-
-  // Listen for consent updates
-  window.addEventListener('consentUpdated', (event) => {
-    const { ads } = (event as CustomEvent).detail;
-    
-    if (ads) {
-      // If consent is given, initialize ads
-      initializeAds();
-    }
-  });
-
-  // Initialize on load if consent is already given
-  window.addEventListener('load', () => {
-    if (hasAdsConsent()) {
-      initializeAds();
-    }
-  });
+  
+  // Register this ad unit
+  registerAdUnit();
 </script>

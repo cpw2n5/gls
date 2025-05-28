@@ -1,38 +1,31 @@
-// Global type declarations for analytics and ads
+// Global type definitions
 
 interface Window {
-  // Plausible Analytics
-  plausible?: (eventName: string, options?: { props?: Record<string, any> }) => void;
-  
-  // Consent Management
+  // Consent management
   glsConsent?: {
     getConsent: () => { analytics: boolean; ads: boolean };
     hasAnalyticsConsent: () => boolean;
     hasAdsConsent: () => boolean;
   };
   
-  // Event Tracking
-  trackEvent?: (eventName: string, props?: Record<string, any>) => void;
+  // AdSense management
+  glsAdSense?: {
+    isScriptLoaded: () => boolean;
+    loadScript: () => void;
+    registerAdUnit: (element: Element) => void;
+  };
   
-  // Google AdSense
+  // AdSense global object
   adsbygoogle?: any[];
 }
 
-// Declare the CustomEvent type with generic detail
-interface CustomEventInit<T = any> extends EventInit {
-  detail?: T;
-}
-
-interface CustomEvent<T = any> extends Event {
-  readonly detail: T;
-  initCustomEvent(type: string, bubbles?: boolean, cancelable?: boolean, detail?: T): void;
-}
-
+// Custom events
 interface CustomEventMap {
   'consentUpdated': CustomEvent<{ analytics: boolean; ads: boolean }>;
 }
 
-// Add the custom events to the WindowEventMap
-interface WindowEventMap {
-  'consentUpdated': CustomEvent<{ analytics: boolean; ads: boolean }>;
+declare global {
+  interface WindowEventMap extends CustomEventMap {}
 }
+
+export {};

@@ -172,8 +172,8 @@ const showConsentManager = consentConfig.enabled;
     if (consentBanner) consentBanner.style.display = 'none';
     if (consentModal) consentModal.style.display = 'none';
     
-    // Reload the page to apply changes
-    window.location.reload();
+    // Don't reload the page - instead, let the event listeners handle the changes
+    // This avoids unnecessary page reloads and improves user experience
   }
   
   function loadSavedConsent() {

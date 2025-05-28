@@ -1,39 +1,140 @@
 ---
 import { adsenseConfig, shouldLoadAds } from '../../config/analytics';
 
-// Only load if ads should be loaded (based on environment and config)
-const loadAds = shouldLoadAds();
+// Only check if ads should be loaded based on environment and config
+// But don't actually load the script yet - we'll do that conditionally
+const adsEnabled = shouldLoadAds();
 ---
 
-{loadAds && (
-  <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseConfig.clientId}`} crossorigin="anonymous"></script>
-)}
-
-<script define:vars={{ clientId: adsenseConfig.clientId }}>
+<script define:vars={{ clientId: adsenseConfig.clientId, adsEnabled }}>
+  // AdSense script loading state
+  let adSenseScriptLoaded = false;
+  let adSenseScriptLoading = false;
+  let visibleAdUnits = new Set();
+  
+  // Load the AdSense script only when needed
+  function loadAdSenseScript() {
+    // Only proceed if ads are enabled in config and not already loading/loaded
+    if (!adsEnabled || adSenseScriptLoaded || adSenseScriptLoading) return;
+    
+    // Check if user has given consent for ads
+    if (!window.glsConsent?.hasAdsConsent()) return;
+    
+    // Check if there are any visible ad units
+    if (visibleAdUnits.size === 0) return;
+    
+    // Set loading flag to prevent duplicate loads
+    adSenseScriptLoading = true;
+    
+    // Create and load the script
+    const script = document.createElement('script');
+    script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${clientId}`;
+    script.async = true;
+    script.defer = true; // Add defer attribute for better performance
+    script.crossOrigin = "anonymous";
+    
+    // Set up onload handler
+    script.onload = () => {
+      adSenseScriptLoaded = true;
+      adSenseScriptLoading = false;
+      
+      // Initialize visible ad units
+      initializeVisibleAdUnits();
+      
+      // Log performance metric
+      if (window.performance && window.performance.mark) {
+        window.performance.mark('adsense-script-loaded');
+      }
+    };
+    
+    // Error handling
+    script.onerror = (error) => {
+      console.error('Failed to load AdSense script:', error);
+      adSenseScriptLoading = false;
+    };
+    
+    // Add to document
+    document.head.appendChild(script);
+  }
+  
+  // Initialize only the ad units that are visible
+  function initializeVisibleAdUnits() {
+    if (!adSenseScriptLoaded) return;
+    
+    visibleAdUnits.forEach(adElement => {
+      if (!adElement.dataset.initialized) {
+        try {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+          adElement.dataset.initialized = 'true';
+        } catch (e) {
+          console.error('AdSense initialization error:', e);
+        }
+      }
+    });
+  }
+  
+  // Set up intersection observer for lazy loading
+  function setupAdObserver() {
+    if (!adsEnabled) return;
+    
+    const adObserver = new IntersectionObserver((entries) => {
+      let newVisibleAd = false;
+      
+      entries.forEach(entry => {
+        const adElement = entry.target;
+        
+        if (entry.isIntersecting) {
+          // Ad is now visible
+          visibleAdUnits.add(adElement);
+          newVisibleAd = true;
+        } else {
+          // Ad is no longer visible
+          visibleAdUnits.delete(adElement);
+        }
+      });
+      
+      // If we have a newly visible ad and consent, load the script
+      if (newVisibleAd && window.glsConsent?.hasAdsConsent()) {
+        loadAdSenseScript();
+      }
+    }, {
+      rootMargin: '200px', // Load ads when they're within 200px of viewport
+      threshold: 0.01      // Trigger when at least 1% of the ad is visible
+    });
+    
+    // Observe all ad units
+    document.querySelectorAll('.adsbygoogle').forEach(ad => {
+      adObserver.observe(ad);
+    });
+  }
+  
   // Listen for consent updates
   window.addEventListener('consentUpdated', (event) => {
     const { ads } = (event as CustomEvent).detail;
     
-    // If ads consent is given but AdSense script isn't loaded yet
-    if (ads && !document.querySelector('script[src*="adsbygoogle.js"]')) {
-      // Dynamically add the AdSense script
-      const script = document.createElement('script');
-      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${clientId}`;
-      script.async = true;
-      script.crossOrigin = "anonymous";
-      document.head.appendChild(script);
-      
-      // Initialize any existing ad units
-      script.onload = () => {
-        const adElements = document.querySelectorAll('.adsbygoogle');
-        adElements.forEach(ad => {
-          try {
-            (window.adsbygoogle = window.adsbygoogle || []).push({});
-          } catch (e) {
-            console.error('AdSense error:', e);
-          }
-        });
-      };
+    if (ads && visibleAdUnits.size > 0) {
+      loadAdSenseScript();
     }
   });
+  
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupAdObserver);
+  } else {
+    setupAdObserver();
+  }
+  
+  // Expose API for other components
+  window.glsAdSense = {
+    isScriptLoaded: () => adSenseScriptLoaded,
+    loadScript: loadAdSenseScript,
+    registerAdUnit: (element) => {
+      if (element && element.classList.contains('adsbygoogle')) {
+        visibleAdUnits.add(element);
+        if (window.glsConsent?.hasAdsConsent()) {
+          loadAdSenseScript();
+        }
+      }
+    }
+  };
 </script>
