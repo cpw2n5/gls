@@ -40,7 +40,11 @@ const {
 	breadcrumbs
 } = Astro.props;
 
+// Import CSS but don't bundle it - we'll handle it with our optimization strategy
 import "../styles/global.css";
+
+// Determine if we're on the home page
+const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 ---
 
 <!doctype html>
@@ -50,6 +54,9 @@ import "../styles/global.css";
 		<!-- DNS prefetch and preconnect for external resources -->
 		<link rel="dns-prefetch" href="//getlifesorted.com" />
 		<link rel="preconnect" href="https://getlifesorted.com" crossorigin />
+		
+		<!-- Preload critical assets -->
+		<link rel="preload" href="/fonts/main-font.woff2" as="font" type="font/woff2" crossorigin />
 		
 		<SEO
 			title={title}
@@ -65,9 +72,24 @@ import "../styles/global.css";
 			noIndex={noIndex}
 			breadcrumbs={breadcrumbs}
 		/>
+		
+		<!-- CSS Optimization must come before other CSS -->
 		<CSSOptimization />
 		<FontOptimization />
 		<Analytics />
+		
+		<!-- Add resource hints for faster loading -->
+		{isHomePage && (
+			<>
+				<!-- Preconnect to origins of critical resources -->
+				<link rel="preconnect" href={Astro.url.origin} crossorigin />
+				
+				<!-- Prefetch important pages users might navigate to -->
+				<link rel="prefetch" href="/calculators" />
+				<link rel="prefetch" href="/articles" />
+				<link rel="prefetch" href="/guides" />
+			</>
+		)}
 	</head>
 	<body class="min-h-screen flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
 		<Header />
