@@ -33,23 +33,43 @@ To ensure code quality and prevent accidental deployments:
 
 A GitHub Actions workflow is configured in `.github/workflows/deploy.yml` that:
 
-1. Builds the site on every push to `main` and on pull requests
-2. Deploys to Cloudflare Pages
-3. Creates preview deployments for pull requests
-4. Adds a comment to pull requests with the preview URL
+1. Builds the site on every push to `main`
+2. Runs linting for code quality
+3. Deploys to Cloudflare Pages automatically
+4. Can be manually triggered via GitHub Actions interface
+
+The workflow performs the following steps:
+- Checks out the repository
+- Sets up Node.js 18
+- Installs dependencies
+- Runs ESLint for code quality checks
+- Builds the Astro site
+- Deploys to Cloudflare Pages
+
+To manually trigger a deployment:
+1. Go to your GitHub repository
+2. Navigate to Actions → "Deploy to Cloudflare Pages" workflow
+3. Click "Run workflow" dropdown
+4. Select the branch you want to deploy
+5. Click "Run workflow"
 
 ### GitHub Secrets
 
-The following secrets need to be configured in your GitHub repository:
+The following secrets **must** be configured in your GitHub repository for the deployment workflow to function:
 
 1. `CLOUDFLARE_API_TOKEN`: API token from Cloudflare with Pages permissions
+   - Create this token in Cloudflare Dashboard → My Profile → API Tokens
+   - Use the "Edit Cloudflare Workers" template or create a custom token with:
+     - Account.Cloudflare Pages: Edit permission
+     - Zone.Cloudflare Pages: Edit permission
+
 2. `CLOUDFLARE_ACCOUNT_ID`: Your Cloudflare account ID
-3. `PLAUSIBLE_DOMAIN`: Your Plausible Analytics domain
-4. `GOOGLE_ANALYTICS_ID`: Your Google Analytics ID
+   - Find this in the Cloudflare Dashboard URL: `https://dash.cloudflare.com/ACCOUNT_ID`
+   - Or in the Overview page of your account
 
 To add these secrets:
 1. Go to your GitHub repository → Settings → Secrets and variables → Actions
-2. Click "New repository secret" and add each secret
+2. Click "New repository secret" and add each secret with the exact names shown above
 
 ## Cloudflare Pages Setup
 
@@ -72,7 +92,12 @@ Set the following environment variables in Cloudflare Pages:
 2. Add the following variables for Production and Preview environments:
    - `PLAUSIBLE_DOMAIN`: getlifesorted.com
    - `GOOGLE_ANALYTICS_ID`: Your Google Analytics ID
+   - `SITE_URL`: https://getlifesorted.com (for production) or your preview URL
+   - `ENABLE_ADS`: "true" or "false" to toggle ad display
+   - `ENABLE_NEWSLETTER`: "true" or "false" to toggle newsletter features
    - Any other API keys or environment-specific variables
+
+These environment variables are used by the Astro build process and affect site functionality. Make sure to set them for both Production and Preview environments as needed.
 
 ### Caching and Performance
 

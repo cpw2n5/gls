@@ -53,15 +53,37 @@ All commands are run from the root of the project, from a terminal:
 | `npm run dev`             | Starts local dev server at `localhost:4321`      |
 | `npm run build`           | Build your production site to `./dist/`          |
 | `npm run preview`         | Preview your build locally, before deploying     |
+| `npm run lint`            | Run ESLint to check code quality                 |
+| `npm run lint:fix`        | Run ESLint and automatically fix issues          |
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 
 ## 🚢 Deployment
 
-This project is deployed using Cloudflare Pages with GitHub integration. See the [deployment documentation](./src/docs/deployment.md) for details on:
-- GitHub repository configuration
-- Cloudflare Pages setup
-- Custom domain configuration
-- CI/CD workflow
+This project is deployed using Cloudflare Pages with GitHub Actions integration. The deployment process is fully automated through a CI/CD pipeline.
+
+### GitHub Actions Workflow
+
+A GitHub Actions workflow is configured in `.github/workflows/deploy.yml` that:
+- Builds and tests the Astro site on push to main branch
+- Runs linting for code quality
+- Deploys automatically to Cloudflare Pages
+
+### Required GitHub Secrets
+
+The following secrets must be configured in your GitHub repository:
+- `CLOUDFLARE_API_TOKEN`: API token from Cloudflare with Pages permissions
+- `CLOUDFLARE_ACCOUNT_ID`: Your Cloudflare account ID
+
+### Required Environment Variables in Cloudflare Pages
+
+The following environment variables should be set in Cloudflare Pages:
+- `PLAUSIBLE_DOMAIN`: For analytics
+- `GOOGLE_ANALYTICS_ID`: For Google Analytics
+- `SITE_URL`: Site URL (https://getlifesorted.com)
+- `ENABLE_ADS`: Feature flag for ads
+- `ENABLE_NEWSLETTER`: Feature flag for newsletter
+
+For detailed deployment instructions, including how to manually trigger deployments, see the [deployment documentation](./src/docs/deployment.md).
 
 ## 🔒 Environment Variables
 
