@@ -13,6 +13,7 @@ Welcome to the GetLifeSorted documentation. This index provides links to all doc
 ## Getting Started
 
 - [Project Overview](../../README.md) - Introduction to GetLifeSorted.com
+- [Architecture Plan](./architecture-plan.md) - Detailed architectural plan for the project
 - [Component Library](./component-library.md) - Documentation for UI components
 - [Project Structure](../../README.md#-project-structure) - Overview of the codebase organization
 
@@ -31,6 +32,7 @@ Welcome to the GetLifeSorted documentation. This index provides links to all doc
 ## Deployment & Operations
 
 - [Deployment Guide](./deployment.md) - Complete deployment process
+- [Deployment Plan](./deployment-plan.md) - CI/CD strategy and troubleshooting
 - [GitHub Workflow](../.github/workflows/deploy.yml) - CI/CD configuration
 - [Cloudflare Configuration](../wrangler.toml) - Cloudflare Pages settings
 - [Headers Configuration](../public/_headers) - HTTP headers for security and caching

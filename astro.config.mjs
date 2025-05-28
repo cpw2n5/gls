@@ -1,13 +1,12 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
+import tailwindConfig from './tailwind.config.js';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://getlifesorted.com',
   integrations: [
-    tailwind(),
     sitemap({
       // Configuration options for sitemap
       filter: (page) => !page.includes('/tags/'), // Exclude tag pages from sitemap
