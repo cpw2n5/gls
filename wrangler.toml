@@ -9,21 +9,22 @@ pages_build_output_dir = "dist"
 command = "npm run build"
 
 # Environment variables
-[vars]
-NODE_VERSION = "22"
+# Moving vars to environment-specific sections
 
 # Production environment
 [env.production]
+vars = { NODE_VERSION = "22" }
 # Add production-specific variables here if needed
 # MY_VAR = "production-value"
 
 # Preview environment (for pull requests)
 [env.preview]
+vars = { NODE_VERSION = "22" }
 # Add preview-specific variables here if needed
 # MY_VAR = "preview-value"
 
-# Routes configuration
-[routes]
+# Routes configuration - changed to array format
+[[routes]]
 # Force HTTPS
 pattern = "http://*"
 script = """
@@ -35,15 +36,15 @@ script = """
 """
 
 # Cache configuration
-# Using array of tables for multiple cache rules
-[[cache]]
+# Using rules array for cache configuration
+[[rules]]
 pattern = "/assets/*"
 ttl = 31536000
 
-[[cache]]
+[[rules]]
 pattern = "/images/*"
 ttl = 604800
 
-[[cache]]
+[[rules]]
 pattern = "/*.html"
 ttl = 0
