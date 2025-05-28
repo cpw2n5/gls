@@ -9,7 +9,7 @@ const loadAds = shouldLoadAds();
   <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseConfig.clientId}`} crossorigin="anonymous"></script>
 )}
 
-<script>
+<script define:vars={{ clientId: adsenseConfig.clientId }}>
   // Listen for consent updates
   window.addEventListener('consentUpdated', (event) => {
     const { ads } = (event as CustomEvent).detail;
@@ -18,7 +18,7 @@ const loadAds = shouldLoadAds();
     if (ads && !document.querySelector('script[src*="adsbygoogle.js"]')) {
       // Dynamically add the AdSense script
       const script = document.createElement('script');
-      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseConfig.clientId}`;
+      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${clientId}`;
       script.async = true;
       script.crossOrigin = "anonymous";
       document.head.appendChild(script);

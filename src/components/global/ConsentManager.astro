@@ -124,7 +124,7 @@ const showConsentManager = consentConfig.enabled;
 <script>
   // Constants
   const CONSENT_COOKIE_NAME = 'gls_consent';
-  const COOKIE_EXPIRATION = consentConfig.cookieExpiration; // days
+  const COOKIE_EXPIRATION = 365; // days - using the value from consentConfig
   
   // DOM Elements
   const consentBanner = document.getElementById('consent-banner');
