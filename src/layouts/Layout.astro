@@ -5,6 +5,7 @@ import SEO from "../components/global/SEO.astro";
 import ConsentManager from "../components/global/ConsentManager.astro";
 import Analytics from "../components/analytics/Analytics.astro";
 import FontOptimization from "../components/global/FontOptimization.astro";
+import CSSOptimization from "../components/global/CSSOptimization.astro";
 
 interface Props {
 	title: string;
@@ -46,6 +47,10 @@ import "../styles/global.css";
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
+		<!-- DNS prefetch and preconnect for external resources -->
+		<link rel="dns-prefetch" href="//getlifesorted.com" />
+		<link rel="preconnect" href="https://getlifesorted.com" crossorigin />
+		
 		<SEO
 			title={title}
 			description={description}
@@ -60,6 +65,7 @@ import "../styles/global.css";
 			noIndex={noIndex}
 			breadcrumbs={breadcrumbs}
 		/>
+		<CSSOptimization />
 		<FontOptimization />
 		<Analytics />
 	</head>

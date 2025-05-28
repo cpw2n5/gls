@@ -9,6 +9,7 @@
 
 <!-- Font preloading for critical fonts -->
 <link rel="preload" href="/fonts/main-font.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/fonts/main-font-bold.woff2" as="font" type="font/woff2" crossorigin />
 
 <!-- Font loading optimization -->
 <style is:inline>
@@ -41,14 +42,26 @@
   }
 </style>
 
-<!-- Font loading detection script -->
+<!-- Font loading detection script with improved performance -->
 <script>
   // Use the Font Loading API to detect when fonts are loaded
   if ('fonts' in document) {
-    Promise.all([
+    // Add a timeout to ensure the page remains usable even if fonts take too long
+    const fontPromise = Promise.all([
       document.fonts.load('1em "Main Font"'),
       document.fonts.load('bold 1em "Main Font"')
+    ]);
+    
+    // Race between font loading and timeout
+    Promise.race([
+      fontPromise,
+      new Promise(resolve => setTimeout(resolve, 2000)) // 2 second timeout
     ]).then(() => {
+      document.documentElement.classList.add('fonts-loaded');
+    });
+    
+    // Still add the class when fonts are eventually loaded
+    fontPromise.then(() => {
       document.documentElement.classList.add('fonts-loaded');
     });
   } else {

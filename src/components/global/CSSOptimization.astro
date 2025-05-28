@@ -1,0 +1,82 @@
+---
+/**
+ * CSSOptimization.astro
+ *
+ * This component optimizes CSS loading for better performance.
+ * It implements strategies to reduce render-blocking CSS and improve critical rendering path.
+ */
+
+// Get the current URL path to determine which CSS files are critical for this page
+const currentPath = Astro.url.pathname;
+const isArticlePage = currentPath.startsWith('/articles/') && !currentPath.endsWith('/articles/');
+---
+
+<script>
+  import { optimizeCSS } from '../../utils/cssLoader.js';
+  
+  // Determine critical and non-critical CSS files based on the current page
+  const currentPath = window.location.pathname;
+  
+  // Critical CSS files that should be loaded immediately
+  const criticalFiles = [];
+  
+  // Non-critical CSS files that can be loaded asynchronously
+  const nonCriticalFiles = [];
+  
+  // Check if we're on an article page
+  if (currentPath.startsWith('/articles/') && !currentPath.endsWith('/articles/')) {
+    // For article pages, the slug CSS is critical
+    const slugCssFiles = Array.from(document.querySelectorAll('link[href*="_slug_"]'))
+      .map(link => link.getAttribute('href'))
+      .filter(href => href);
+      
+    if (slugCssFiles.length > 0) {
+      criticalFiles.push(...slugCssFiles);
+    }
+  }
+  
+  // Optimize CSS loading
+  optimizeCSS(criticalFiles, nonCriticalFiles);
+</script>
+
+<!-- Inline critical CSS for above-the-fold content -->
+<style is:inline>
+  /* Critical CSS for the header, navigation, and above-the-fold content */
+  /* This ensures the initial render doesn't wait for external CSS files */
+  header {
+    display: flex;
+    width: 100%;
+  }
+  
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  @media (min-width: 640px) {
+    .container {
+      max-width: 640px;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .container {
+      max-width: 768px;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .container {
+      max-width: 1024px;
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    .container {
+      max-width: 1280px;
+    }
+  }
+</style>

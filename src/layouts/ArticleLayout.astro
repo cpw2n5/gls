@@ -79,7 +79,26 @@ const shareLinks = {
 };
 ---
 
-<style>
+<style is:inline>
+  /* Critical article styles to avoid render blocking */
+  .article-header {
+    margin-bottom: 2rem;
+  }
+  
+  .article-title {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  @media (min-width: 768px) {
+    .article-title {
+      font-size: 2.25rem;
+      line-height: 2.5rem;
+    }
+  }
+  
   /* Print-friendly styles */
   @media print {
     .no-print {
@@ -134,8 +153,8 @@ const shareLinks = {
 >
   <div class="container py-8">
     <article>
-      <header class="mb-8">
-        <h1 class="text-3xl md:text-4xl font-bold mb-4">{title}</h1>
+      <header class="article-header mb-8">
+        <h1 class="article-title text-3xl md:text-4xl font-bold mb-4">{title}</h1>
         
         <div class="flex flex-wrap items-center text-gray-600 dark:text-gray-400 text-sm mb-4">
           {author && (
