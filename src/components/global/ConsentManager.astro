@@ -24,20 +24,23 @@ const showConsentManager = consentConfig.enabled;
           </p>
         </div>
         <div class="flex flex-wrap gap-2">
-          <button 
-            id="consent-customize" 
+          <button
+            id="consent-customize"
+            aria-label="Customize privacy settings"
             class="px-4 py-2 text-sm bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-md transition"
           >
             Customize
           </button>
-          <button 
-            id="consent-reject" 
+          <button
+            id="consent-reject"
+            aria-label="Reject all cookies and tracking"
             class="px-4 py-2 text-sm bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-md transition"
           >
             Reject All
           </button>
-          <button 
-            id="consent-accept" 
+          <button
+            id="consent-accept"
+            aria-label="Accept all cookies and tracking"
             class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md transition"
           >
             Accept All
@@ -106,8 +109,9 @@ const showConsentManager = consentConfig.enabled;
       </div>
       
       <div class="flex justify-end gap-2">
-        <button 
-          id="consent-modal-save" 
+        <button
+          id="consent-modal-save"
+          aria-label="Save privacy preferences"
           class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition"
         >
           Save Preferences

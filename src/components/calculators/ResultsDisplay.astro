@@ -61,8 +61,9 @@ const formatValue = (value: string | number, type: string = 'text') => {
   {(showPrintButton || showShareButton) && (
     <div class="flex justify-end gap-3 mt-6">
       {showShareButton && (
-        <button 
+        <button
           id="share-button"
+          aria-label="Share calculation results"
           class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -73,8 +74,9 @@ const formatValue = (value: string | number, type: string = 'text') => {
       )}
       
       {showPrintButton && (
-        <button 
+        <button
           id="print-button"
+          aria-label="Print calculation results"
           class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
