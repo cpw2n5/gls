@@ -23,11 +23,20 @@ vars = { NODE_VERSION = "22" }
 # Add preview-specific variables here if needed
 # MY_VAR = "preview-value"
 
-# Routes configuration - changed to array format
-[[routes]]
-# Force HTTPS
-pattern = "http://*"
-script = """
+# Routes configuration - proper format
+routes = [
+  { pattern = "http://*", zone_name = "getlifesorted.com" }
+]
+
+# Script bindings for functionality
+[build.upload]
+format = "service-worker"
+
+# Add bindings with required type field
+[[build.upload.bindings]]
+name = "REDIRECT_SCRIPT"
+type = "Text"
+text = """
   addEventListener('fetch', event => {
     event.respondWith(
       Response.redirect('https://' + event.request.url.slice(7), 301)
@@ -40,11 +49,14 @@ script = """
 [[rules]]
 pattern = "/assets/*"
 ttl = 31536000
+globs = ["assets/*"]
 
 [[rules]]
 pattern = "/images/*"
 ttl = 604800
+globs = ["images/*"]
 
 [[rules]]
 pattern = "/*.html"
 ttl = 0
+globs = ["*.html"]
