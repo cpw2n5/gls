@@ -7,12 +7,10 @@ pages_build_output_dir = "dist"
 # Build configuration
 [build]
 command = "npm run build"
-output_dir = "dist"
-base_dir = ""
 
 # Environment variables
 [vars]
-NODE_VERSION = "18"
+NODE_VERSION = "22"
 
 # Production environment
 [env.production]
