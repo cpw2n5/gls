@@ -1,4 +1,4 @@
-# Cloudflare Pages configuration
+# Cloudflare Pages configuration for Astro
 name = "getlifesorted"
 compatibility_date = "2023-10-30"
 compatibility_flags = ["nodejs_compat"]
@@ -8,55 +8,13 @@ pages_build_output_dir = "dist"
 [build]
 command = "npm run build"
 
-# Environment variables
-# Moving vars to environment-specific sections
+# Assets configuration
+[assets]
+directory = "./dist"
 
-# Production environment
+# Environment variables
 [env.production]
 vars = { NODE_VERSION = "22" }
-# Add production-specific variables here if needed
-# MY_VAR = "production-value"
 
-# Preview environment (for pull requests)
 [env.preview]
 vars = { NODE_VERSION = "22" }
-# Add preview-specific variables here if needed
-# MY_VAR = "preview-value"
-
-# Routes configuration - proper format
-routes = [
-  { pattern = "http://*", zone_name = "getlifesorted.com" }
-]
-
-# Script bindings for functionality
-[build.upload]
-format = "service-worker"
-
-# Add bindings with required type field
-[[build.upload.bindings]]
-name = "REDIRECT_SCRIPT"
-type = "Text"
-text = """
-  addEventListener('fetch', event => {
-    event.respondWith(
-      Response.redirect('https://' + event.request.url.slice(7), 301)
-    )
-  })
-"""
-
-# Cache configuration
-# Using rules array for cache configuration
-[[rules]]
-pattern = "/assets/*"
-ttl = 31536000
-globs = ["assets/*"]
-
-[[rules]]
-pattern = "/images/*"
-ttl = 604800
-globs = ["images/*"]
-
-[[rules]]
-pattern = "/*.html"
-ttl = 0
-globs = ["*.html"]
