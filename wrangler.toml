@@ -36,15 +36,18 @@ script = """
 """
 
 # Cache configuration
-[cache]
+# Using array of tables for multiple cache rules
+[[cache_rules]]
 # Cache all assets for 1 year
 pattern = "/assets/*"
 ttl = 31536000
 
+[[cache_rules]]
 # Cache all images for 1 week
 pattern = "/images/*"
 ttl = 604800
 
+[[cache_rules]]
 # Don't cache HTML files
 pattern = "/*.html"
 ttl = 0
