@@ -15,7 +15,7 @@
 <style is:inline>
   /* Font display strategy to prevent invisible text during font loading */
   @font-face {
-    font-family: 'Main Font';
+    font-family: 'Inter';
     src: url('/fonts/main-font.woff2') format('woff2');
     font-weight: 400;
     font-style: normal;
@@ -24,7 +24,7 @@
   
   /* Optional fonts can use font-display: swap as well */
   @font-face {
-    font-family: 'Main Font';
+    font-family: 'Inter';
     src: url('/fonts/main-font-bold.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
@@ -38,7 +38,7 @@
   
   /* Apply main font once loaded */
   .fonts-loaded {
-    font-family: 'Main Font', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   }
 </style>
 
@@ -48,8 +48,8 @@
   if ('fonts' in document) {
     // Add a timeout to ensure the page remains usable even if fonts take too long
     const fontPromise = Promise.all([
-      document.fonts.load('1em "Main Font"'),
-      document.fonts.load('bold 1em "Main Font"')
+      document.fonts.load('1em "Inter"'),
+      document.fonts.load('bold 1em "Inter"')
     ]);
     
     // Race between font loading and timeout
