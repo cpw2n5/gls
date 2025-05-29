@@ -1,6 +1,4 @@
 ---
-import { adsenseConfig, shouldLoadAds } from '../../config/analytics';
-
 interface Props {
   type: 'banner' | 'sidebar' | 'in-content' | 'footer';
   className?: string;
@@ -25,19 +23,8 @@ const adSlots = {
   'footer': slot || 'footer-default'
 };
 
-// Map kebab-case type to camelCase property name for config lookup
-const typeToConfigMap: Record<Props['type'], keyof typeof adsenseConfig.enabledAdUnits> = {
-  'banner': 'banner',
-  'sidebar': 'sidebar',
-  'in-content': 'inContent',
-  'footer': 'footer'
-};
-
-// Check if this ad unit type is enabled in config
-const isAdTypeEnabled = adsenseConfig.enabledAdUnits[typeToConfigMap[type]] || false;
-
-// Only load ads if they should be loaded (based on environment and config)
-const loadAds = shouldLoadAds() && isAdTypeEnabled;
+// Disable ads since we're removing analytics
+const loadAds = false;
 
 const adSize = adSizes[type] || adSizes['banner'];
 const adSlot = adSlots[type];
@@ -47,45 +34,8 @@ const adFormat = type === 'in-content' ? 'auto' : '';
 ---
 
 <div class={`ad-container ${adSize} ${className} bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden`} data-ad-type={type}>
-  {loadAds ? (
-    <ins
-      class="adsbygoogle"
-      style={`display:block; ${type === 'in-content' ? 'min-height:250px;' : ''}`}
-      data-ad-client={adsenseConfig.clientId}
-      data-ad-slot={adSlot}
-      data-ad-format={adFormat}
-      data-full-width-responsive="true"
-      data-adtest={adsenseConfig.testMode ? "on" : "off"}
-    ></ins>
-  ) : (
-    <div class="text-center text-gray-500 dark:text-gray-400">
-      <p class="text-sm">Advertisement</p>
-      <p class="text-xs">{type} format</p>
-    </div>
-  )}
+  <div class="text-center text-gray-500 dark:text-gray-400">
+    <p class="text-sm">Advertisement</p>
+    <p class="text-xs">{type} format</p>
+  </div>
 </div>
-
-<script>
-  // Register this ad unit with the central AdSense manager
-  function registerAdUnit() {
-    const adElement = document.currentScript?.previousElementSibling?.querySelector('.adsbygoogle');
-    
-    if (!adElement) return;
-    
-    // Check if the global AdSense manager exists
-    if (window.glsAdSense) {
-      // Register this ad unit with the manager
-      window.glsAdSense.registerAdUnit(adElement);
-    } else {
-      // If the AdSense manager isn't loaded yet, wait for it
-      window.addEventListener('DOMContentLoaded', () => {
-        if (window.glsAdSense) {
-          window.glsAdSense.registerAdUnit(adElement);
-        }
-      });
-    }
-  }
-  
-  // Register this ad unit
-  registerAdUnit();
-</script>

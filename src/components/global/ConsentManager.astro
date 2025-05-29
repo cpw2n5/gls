@@ -1,6 +1,4 @@
 ---
-import { consentConfig } from '../../config/analytics';
-
 // Props for customization
 interface Props {
   className?: string;
@@ -8,8 +6,8 @@ interface Props {
 
 const { className = '' } = Astro.props;
 
-// Only show if consent management is enabled
-const showConsentManager = consentConfig.enabled;
+// Disable consent manager since we're removing analytics
+const showConsentManager = false;
 ---
 
 {showConsentManager && (
@@ -19,7 +17,7 @@ const showConsentManager = consentConfig.enabled;
         <div class="flex-1">
           <h3 class="text-lg font-semibold mb-1">Privacy Preferences</h3>
           <p class="text-sm text-gray-600 dark:text-gray-300">
-            We use cookies to enhance your browsing experience, serve personalized ads or content, and analyze our traffic. 
+            We use cookies to enhance your browsing experience and serve personalized ads or content.
             By clicking "Accept All", you consent to our use of cookies.
           </p>
         </div>
@@ -82,16 +80,16 @@ const showConsentManager = consentConfig.enabled;
         
         <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-md">
           <div class="flex items-center justify-between mb-2">
-            <h3 class="font-medium">Analytics Cookies</h3>
+            <h3 class="font-medium">Functional Cookies</h3>
             <div class="relative inline-block w-10 mr-2 align-middle">
-              <input type="checkbox" id="consent-analytics" class="sr-only" />
-              <label for="consent-analytics" class="sr-only">Analytics Cookies</label>
+              <input type="checkbox" id="consent-functional" class="sr-only" />
+              <label for="consent-functional" class="sr-only">Functional Cookies</label>
               <span class="block h-6 w-10 rounded-full bg-gray-400 cursor-pointer"></span>
-              <span id="analytics-toggle" class="absolute left-0 top-0 block h-6 w-6 rounded-full bg-white shadow transform"></span>
+              <span id="functional-toggle" class="absolute left-0 top-0 block h-6 w-6 rounded-full bg-white shadow transform"></span>
             </div>
           </div>
           <p class="text-sm text-gray-600 dark:text-gray-300">
-            These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our site.
+            These cookies enable enhanced functionality and personalization.
           </p>
         </div>
         
@@ -137,9 +135,9 @@ const showConsentManager = consentConfig.enabled;
   const acceptAllBtn = document.getElementById('consent-accept');
   const modalCloseBtn = document.getElementById('consent-modal-close');
   const modalSaveBtn = document.getElementById('consent-modal-save');
-  const analyticsToggle = document.getElementById('analytics-toggle');
+  const functionalToggle = document.getElementById('functional-toggle');
   const adsToggle = document.getElementById('ads-toggle');
-  const analyticsCheckbox = document.getElementById('consent-analytics') as HTMLInputElement;
+  const functionalCheckbox = document.getElementById('consent-functional') as HTMLInputElement;
   const adsCheckbox = document.getElementById('consent-ads') as HTMLInputElement;
   
   // Helper functions
@@ -162,13 +160,13 @@ const showConsentManager = consentConfig.enabled;
     return null;
   }
   
-  function saveConsent(analytics: boolean, ads: boolean) {
-    const consentValue = JSON.stringify({ analytics, ads });
+  function saveConsent(functional: boolean, ads: boolean) {
+    const consentValue = JSON.stringify({ functional, ads });
     setCookie(CONSENT_COOKIE_NAME, consentValue, COOKIE_EXPIRATION);
     
     // Dispatch a custom event that other scripts can listen for
-    window.dispatchEvent(new CustomEvent('consentUpdated', { 
-      detail: { analytics, ads } 
+    window.dispatchEvent(new CustomEvent('consentUpdated', {
+      detail: { functional, ads }
     }));
     
     // Hide the banner/modal
@@ -183,10 +181,10 @@ const showConsentManager = consentConfig.enabled;
     const savedConsent = getCookie(CONSENT_COOKIE_NAME);
     if (savedConsent) {
       try {
-        const { analytics, ads } = JSON.parse(savedConsent);
+        const { functional, ads } = JSON.parse(savedConsent);
         
         // Update UI to reflect saved preferences
-        if (analyticsCheckbox) analyticsCheckbox.checked = analytics;
+        if (functionalCheckbox) functionalCheckbox.checked = functional;
         if (adsCheckbox) adsCheckbox.checked = ads;
         
         // Update toggle positions
@@ -196,8 +194,8 @@ const showConsentManager = consentConfig.enabled;
         if (consentBanner) consentBanner.style.display = 'none';
         
         // Dispatch the event for other scripts
-        window.dispatchEvent(new CustomEvent('consentUpdated', { 
-          detail: { analytics, ads } 
+        window.dispatchEvent(new CustomEvent('consentUpdated', {
+          detail: { functional, ads }
         }));
       } catch (e) {
         console.error('Error parsing consent cookie:', e);
@@ -206,10 +204,10 @@ const showConsentManager = consentConfig.enabled;
   }
   
   function updateTogglePositions() {
-    if (analyticsToggle && analyticsCheckbox) {
-      analyticsToggle.classList.toggle('translate-x-4', analyticsCheckbox.checked);
-      analyticsToggle.parentElement?.classList.toggle('bg-blue-600', analyticsCheckbox.checked);
-      analyticsToggle.parentElement?.classList.toggle('bg-gray-400', !analyticsCheckbox.checked);
+    if (functionalToggle && functionalCheckbox) {
+      functionalToggle.classList.toggle('translate-x-4', functionalCheckbox.checked);
+      functionalToggle.parentElement?.classList.toggle('bg-blue-600', functionalCheckbox.checked);
+      functionalToggle.parentElement?.classList.toggle('bg-gray-400', !functionalCheckbox.checked);
     }
     
     if (adsToggle && adsCheckbox) {
@@ -246,15 +244,15 @@ const showConsentManager = consentConfig.enabled;
   
   if (modalSaveBtn) {
     modalSaveBtn.addEventListener('click', () => {
-      const analyticsConsent = analyticsCheckbox?.checked || false;
+      const functionalConsent = functionalCheckbox?.checked || false;
       const adsConsent = adsCheckbox?.checked || false;
-      saveConsent(analyticsConsent, adsConsent);
+      saveConsent(functionalConsent, adsConsent);
     });
   }
   
   // Toggle UI updates
-  if (analyticsCheckbox) {
-    analyticsCheckbox.addEventListener('change', updateTogglePositions);
+  if (functionalCheckbox) {
+    functionalCheckbox.addEventListener('change', updateTogglePositions);
   }
   
   if (adsCheckbox) {
@@ -276,8 +274,8 @@ const showConsentManager = consentConfig.enabled;
   
   // Define the type for our consent API
   type ConsentAPI = {
-    getConsent: () => { analytics: boolean; ads: false };
-    hasAnalyticsConsent: () => boolean;
+    getConsent: () => { functional: boolean; ads: boolean };
+    hasFunctionalConsent: () => boolean;
     hasAdsConsent: () => boolean;
   };
 
@@ -289,13 +287,13 @@ const showConsentManager = consentConfig.enabled;
         try {
           return JSON.parse(savedConsent);
         } catch (e) {
-          return { analytics: false, ads: false };
+          return { functional: false, ads: false };
         }
       }
-      return { analytics: false, ads: false };
+      return { functional: false, ads: false };
     },
-    hasAnalyticsConsent: () => {
-      return ((window as any).glsConsent as ConsentAPI).getConsent().analytics;
+    hasFunctionalConsent: () => {
+      return ((window as any).glsConsent as ConsentAPI).getConsent().functional;
     },
     hasAdsConsent: () => {
       return ((window as any).glsConsent as ConsentAPI).getConsent().ads;

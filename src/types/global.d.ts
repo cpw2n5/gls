@@ -4,29 +4,15 @@ declare global {
   interface Window {
     // Consent management
     glsConsent?: {
-      getConsent: () => { analytics: boolean; ads: boolean };
-      hasAnalyticsConsent: () => boolean;
+      getConsent: () => { functional: boolean; ads: boolean };
+      hasFunctionalConsent: () => boolean;
       hasAdsConsent: () => boolean;
     };
-    
-    // AdSense management
-    glsAdSense?: {
-      isScriptLoaded: () => boolean;
-      loadScript: () => void;
-      registerAdUnit: (element: Element) => void;
-    };
-    
-    // AdSense global object
-    adsbygoogle?: unknown[];
-    
-    // Plausible Analytics
-    plausible?: (eventName: string, options?: { props?: Record<string, string | number | boolean> }) => void;
-    trackEvent?: (eventName: string, props?: Record<string, string | number | boolean>) => void;
   }
 
   // Custom events
   interface CustomEventMap {
-    'consentUpdated': CustomEvent<{ analytics: boolean; ads: boolean }>;
+    'consentUpdated': CustomEvent<{ functional: boolean; ads: boolean }>;
   }
 
   // This interface merges with the built-in WindowEventMap to add our custom events

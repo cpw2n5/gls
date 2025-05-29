@@ -1,67 +1,16 @@
 ---
 /**
  * FontOptimization.astro
- * 
- * This component optimizes font loading for better performance and SEO.
- * It uses the font-display: swap strategy and preloads critical fonts.
+ *
+ * This component has been modified to use system fonts only.
+ * All custom font loading has been removed.
  */
 ---
 
-<!-- Font preloading with improved attributes -->
-<link rel="preload" href="/fonts/main-font.woff2" as="font" type="font/woff2" crossorigin="anonymous" fetchpriority="high" />
-<link rel="preload" href="/fonts/main-font-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous" fetchpriority="high" />
-
-<!-- Font loading optimization -->
+<!-- System font stack only -->
 <style is:inline>
-  /* Font display strategy to prevent invisible text during font loading */
-  @font-face {
-    font-family: 'Inter';
-    src: url('/fonts/main-font.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-  }
-  
-  /* Optional fonts can use font-display: swap as well */
-  @font-face {
-    font-family: 'Inter';
-    src: url('/fonts/main-font-bold.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-  }
-  
-  /* Font fallback to prevent layout shifts */
+  /* System font stack for all text */
   html {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   }
-  
-  /* Apply main font once loaded */
-  .fonts-loaded {
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  }
 </style>
-
-<!-- Font loading detection script with improved performance -->
-<script>
-  // Immediately add the fonts-loaded class to prevent FOUT
-  document.documentElement.classList.add('fonts-loaded');
-  
-  // Use the Font Loading API to detect when fonts are loaded
-  if ('fonts' in document) {
-    // Load fonts immediately with a shorter timeout
-    const fontPromise = Promise.all([
-      document.fonts.load('1em "Inter"'),
-      document.fonts.load('bold 1em "Inter"')
-    ]);
-    
-    // Use a shorter timeout (1 second instead of 2)
-    Promise.race([
-      fontPromise,
-      new Promise(resolve => setTimeout(resolve, 1000))
-    ]).then(() => {
-      // Class is already added, but this ensures fonts are used
-      document.documentElement.classList.add('fonts-loaded');
-    });
-  }
-</script>

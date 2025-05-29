@@ -3,7 +3,6 @@ import Header from "../components/global/Header.astro";
 import Footer from "../components/global/Footer.astro";
 import SEO from "../components/global/SEO.astro";
 import ConsentManager from "../components/global/ConsentManager.astro";
-import Analytics from "../components/analytics/Analytics.astro";
 import FontOptimization from "../components/global/FontOptimization.astro";
 import CSSOptimization from "../components/global/CSSOptimization.astro";
 
@@ -59,7 +58,6 @@ const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 		<!-- CSS Optimization must come before other CSS -->
 		<CSSOptimization />
 		<FontOptimization />
-		<Analytics />
 		
 		<!-- Add resource hints for faster loading -->
 		{isHomePage && (
