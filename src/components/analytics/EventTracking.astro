@@ -3,7 +3,10 @@
 // It doesn't render any visible content, but adds event listeners to track user behavior
 ---
 
-<script>
+<script lang="ts">
+  // The Window interface is extended in a global .d.ts file for TypeScript support.
+  // Remove global declarations from Astro component scripts.
+
   // Define the events we want to track
   const trackableEvents = [
     // Calculator usage
@@ -74,7 +77,7 @@
         const elements = document.querySelectorAll(trackableEvent.selector);
         
         elements.forEach(element => {
-          element.addEventListener(trackableEvent.event, (e) => {
+          element.addEventListener(trackableEvent.event, () => {
             if (!hasAnalyticsConsent()) return;
             
             // Get additional properties based on element type
@@ -109,7 +112,7 @@
   
   // Re-initialize tracking when consent is updated
   window.addEventListener('consentUpdated', (event) => {
-    const { analytics } = (event as CustomEvent).detail;
+    const analytics = event.detail?.analytics;
     
     if (analytics) {
       initializeTracking();

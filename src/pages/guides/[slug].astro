@@ -35,7 +35,7 @@ if (guide.data.relatedGuides && guide.data.relatedGuides.length > 0) {
       if (related && !related.data.draft) {
         explicitlyRelatedGuides.push(related);
       }
-    } catch (e) {
+    } catch {
       // Skip if guide not found
     }
   }
@@ -50,7 +50,7 @@ if (guide.data.relatedCalculators && guide.data.relatedCalculators.length > 0) {
       if (calculator) {
         relatedCalculators.push(calculator);
       }
-    } catch (e) {
+    } catch {
       // Skip if calculator not found
     }
   }

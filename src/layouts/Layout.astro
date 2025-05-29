@@ -7,24 +7,6 @@ import Analytics from "../components/analytics/Analytics.astro";
 import FontOptimization from "../components/global/FontOptimization.astro";
 import CSSOptimization from "../components/global/CSSOptimization.astro";
 
-interface Props {
-	title: string;
-	description?: string;
-	canonicalUrl?: string;
-	image?: string;
-	type?: 'website' | 'article' | 'calculator';
-	publishDate?: Date;
-	updatedDate?: Date;
-	author?: string;
-	tags?: string[];
-	section?: string;
-	noIndex?: boolean;
-	breadcrumbs?: {
-		name: string;
-		url: string;
-	}[];
-}
-
 const {
 	title,
 	description = "Financial tools, calculators, and informative articles to help you get your life sorted.",

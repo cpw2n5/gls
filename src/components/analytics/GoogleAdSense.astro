@@ -110,7 +110,8 @@ const adsEnabled = shouldLoadAds();
   
   // Listen for consent updates
   window.addEventListener('consentUpdated', (event) => {
-    const { ads } = (event as CustomEvent).detail;
+    // Access CustomEvent detail without using TypeScript type assertion
+    const { ads } = event instanceof CustomEvent ? event.detail : {};
     
     if (ads && visibleAdUnits.size > 0) {
       loadAdSenseScript();

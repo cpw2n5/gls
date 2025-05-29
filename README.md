@@ -56,17 +56,38 @@ All commands are run from the root of the project, from a terminal:
 | `npm run lint`            | Run ESLint to check code quality                 |
 | `npm run lint:fix`        | Run ESLint and automatically fix issues          |
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `npm run test`            | Run tests once                                   |
+| `npm run test:watch`      | Run tests in watch mode                          |
+| `npm run test:coverage`   | Run tests with coverage reporting                |
+
+## 🧪 Testing & CI
+
+GetLifeSorted.com uses Vitest for testing with happy-dom for browser environment simulation. The testing setup includes:
+
+- Unit tests for utility functions and components
+- Coverage reporting in multiple formats (text, JSON, HTML)
+- Automated testing through GitHub Actions CI
+
+For detailed information about the testing setup, how to run tests, and how to write new tests, see the [Testing Documentation](./TESTING.md).
 
 ## 🚢 Deployment
 
 This project is deployed using Cloudflare Pages with GitHub Actions integration. The deployment process is fully automated through a CI/CD pipeline.
 
-### GitHub Actions Workflow
+### GitHub Actions Workflows
 
-A GitHub Actions workflow is configured in `.github/workflows/deploy.yml` that:
-- Builds and tests the Astro site on push to main branch
-- Runs linting for code quality
-- Deploys automatically to Cloudflare Pages
+The project uses GitHub Actions for continuous integration and deployment:
+
+1. **CI Workflow** (`.github/workflows/ci.yml`):
+   - Runs on push to main branch and pull requests
+   - Performs linting to ensure code quality
+   - Runs all tests and generates coverage reports
+   - Uploads coverage reports as artifacts
+
+2. **Deployment Workflow** (`.github/workflows/deploy.yml`):
+   - Builds and tests the Astro site on push to main branch
+   - Runs linting for code quality
+   - Deploys automatically to Cloudflare Pages
 
 ### Required GitHub Secrets
 

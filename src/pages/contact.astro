@@ -148,17 +148,19 @@ import Layout from "../layouts/Layout.astro";
     // In a real implementation, this would send the form data to a server
     // For demo purposes, we'll just show a success message
     
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    
-    // Log form data
-    console.log('Form submitted with data:');
-    formData.forEach((value, key) => {
-      console.log(`${key}: ${value}`);
-    });
-    
-    // Show success message
-    form.innerHTML = `
+    // Check if e.target is an HTMLFormElement
+    if (e.target instanceof HTMLFormElement) {
+      const form = e.target;
+      const formData = new FormData(form);
+      
+      // Log form data
+      console.log('Form submitted with data:');
+      formData.forEach((value, key) => {
+        console.log(`${key}: ${value}`);
+      });
+      
+      // Show success message
+      form.innerHTML = `
       <div class="text-center py-8">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -169,5 +171,6 @@ import Layout from "../layouts/Layout.astro";
         </p>
       </div>
     `;
+    }
   });
 </script>

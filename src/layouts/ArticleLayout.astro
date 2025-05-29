@@ -4,18 +4,6 @@ import AdUnit from "../components/global/AdUnit.astro";
 import OptimizedImage from "../components/global/OptimizedImage.astro";
 // Using standard SVG icons instead of astro-icon
 
-interface Props {
-  title: string;
-  description?: string;
-  publishDate?: Date;
-  updatedDate?: Date;
-  author?: string;
-  image?: string;
-  tags?: string[];
-  showAds?: boolean;
-  content?: string; // For extracting headings and calculating reading time
-}
-
 const {
   title,
   description,

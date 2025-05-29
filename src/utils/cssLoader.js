@@ -1,8 +1,11 @@
+/* global document, window, console, setTimeout, requestAnimationFrame, fetch */
+
 /**
  * CSS Loader Utility
- * 
+ *
  * This utility provides functions to dynamically load CSS files
  * in a way that doesn't block the critical rendering path.
+ * This file is intended to run only in browser environments.
  */
 
 /**
@@ -15,6 +18,12 @@
  * @returns {HTMLLinkElement} - The created link element
  */
 export function loadCSS(href, options = {}) {
+  // Check if we're in a browser environment
+  if (typeof document === 'undefined') {
+    console.warn('loadCSS called in a non-browser environment');
+    return null;
+  }
+
   const { defer = false, media = 'all', onload = null, priority = 'auto' } = options;
   
   // Create link element
@@ -44,13 +53,15 @@ export function loadCSS(href, options = {}) {
     });
   } else {
     // If deferred, wait until the page has loaded
-    window.addEventListener('load', () => {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('load', () => {
       // Use setTimeout to push this task to the end of the event queue
       // This ensures it happens after other load events
       setTimeout(() => {
         link.media = media;
       }, 0);
-    });
+      });
+    }
   }
   
   return link;
@@ -62,6 +73,12 @@ export function loadCSS(href, options = {}) {
  * @returns {HTMLLinkElement} - The created link element
  */
 export function preloadCSS(href, priority = 'low') {
+  // Check if we're in a browser environment
+  if (typeof document === 'undefined') {
+    console.warn('preloadCSS called in a non-browser environment');
+    return null;
+  }
+  
   const link = document.createElement('link');
   link.rel = 'preload';
   link.as = 'style';
@@ -82,6 +99,12 @@ export function preloadCSS(href, priority = 'low') {
  * @param {Array<string>} nonCriticalFiles - Array of non-critical CSS file URLs
  */
 export function optimizeCSS(criticalFiles = [], nonCriticalFiles = []) {
+  // Check if we're in a browser environment
+  if (typeof document === 'undefined') {
+    console.warn('optimizeCSS called in a non-browser environment');
+    return;
+  }
+  
   // Load critical CSS files immediately with high priority
   criticalFiles.forEach(file => {
     loadCSS(file, { priority: 'high' });
@@ -102,6 +125,12 @@ export function optimizeCSS(criticalFiles = [], nonCriticalFiles = []) {
  * @returns {Promise<string>} - Promise resolving to the extracted CSS
  */
 export async function extractCriticalCSS(href, selectors = []) {
+  // Check if we're in a browser environment
+  if (typeof document === 'undefined' || typeof window === 'undefined') {
+    console.warn('extractCriticalCSS called in a non-browser environment');
+    return '';
+  }
+  
   try {
     // Fetch the CSS file
     const response = await fetch(href);

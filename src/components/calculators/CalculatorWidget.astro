@@ -20,23 +20,6 @@ interface InputConfig {
   helpText?: string;
 }
 
-interface ResultItem {
-  label: string;
-  value: string | number;
-  type?: 'currency' | 'percentage' | 'text' | 'number';
-  description?: string;
-}
-
-interface Props {
-  id: string;
-  title: string;
-  description?: string;
-  inputs: InputConfig[];
-  initialResults?: ResultItem[];
-  showShareButton?: boolean;
-  showPrintButton?: boolean;
-  calculationFunction?: string;
-}
 
 const {
   id,
@@ -113,7 +96,7 @@ const {
   </div>
 </div>
 
-<script define:vars={{ id, calculationFunction }}>
+<script define:vars={{ id, calculationFunction, title }}>
 // Parse URL parameters to pre-fill form and show results
 function parseUrlParams() {
   const urlParams = new URLSearchParams(window.location.search);

@@ -15,10 +15,12 @@ const { scriptProps } = plausibleConfig;
   ></script>
 )}
 
-<script>
+<script lang="ts">
+  // Declare the trackEvent property on Window
+
   // Listen for consent updates
   window.addEventListener('consentUpdated', (event) => {
-    const { analytics } = (event as CustomEvent).detail;
+    const { analytics } = event.detail;
     
     // If analytics consent is given but analytics script isn't loaded yet
     if (analytics && !document.querySelector('script[src*="plausible.io"]')) {
