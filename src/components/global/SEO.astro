@@ -170,4 +170,6 @@ if (type === 'calculator') {
 <meta name="generator" content={Astro.generator} />
 
 <!-- Structured Data -->
-<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+<!-- Structured data is now handled by external script -->
+<div id="structured-data-container" data-structured-data={JSON.stringify(structuredData)}></div>
+<script src="/scripts/seo-structured-data.js" defer></script>
