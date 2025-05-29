@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
-import tailwindConfig from './tailwind.config.js';
 
 // https://astro.build/config
 export default defineConfig({
