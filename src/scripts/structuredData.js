@@ -14,5 +14,7 @@ function injectStructuredData(structuredData) {
   document.head.appendChild(script);
 }
 
-// Export the function for use in components
-export { injectStructuredData };
+// Make the function available globally
+window.structuredData = {
+  inject: injectStructuredData
+};
