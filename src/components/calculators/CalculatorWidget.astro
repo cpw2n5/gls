@@ -20,6 +20,21 @@ interface InputConfig {
   helpText?: string;
 }
 
+export interface Props {
+  id: string;
+  title: string;
+  description?: string;
+  inputs?: InputConfig[];
+  initialResults?: Array<{
+    label: string;
+    value: string | number;
+    type?: 'text' | 'currency' | 'percentage' | 'number';
+    description?: string;
+  }>;
+  showShareButton?: boolean;
+  showPrintButton?: boolean;
+  calculationFunction?: string;
+}
 
 const {
   id,
