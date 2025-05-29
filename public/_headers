@@ -27,5 +27,5 @@
   Priority: low
 
 # Don't cache HTML files
-*.html
+/*.html
   Cache-Control: public, max-age=0, must-revalidate

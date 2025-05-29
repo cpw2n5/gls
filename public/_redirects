@@ -1,9 +1,10 @@
-# Redirect www to non-www
-https://www.getlifesorted.com/* https://getlifesorted.com/:splat 301!
+# Redirect www to non-www (handled by Netlify's domain settings)
+# This rule is commented out as absolute URLs aren't allowed in _redirects
+# For www to non-www redirects, configure it in the Netlify domain settings instead
 
 # Redirect old paths to new paths if needed
 # /old-path /new-path 301
 # /legacy-calculator /calculators/rental-insurance 301
 
 # Handle 404s
-/* /404.html 404
+/* /404.html 308
