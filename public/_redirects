@@ -6,5 +6,6 @@
 # /old-path /new-path 301
 # /legacy-calculator /calculators/rental-insurance 301
 
-# Handle 404s
-/* /404.html 308
+# 404 handling is managed by Astro's 404.astro page
+# The previous rule was causing an infinite redirect loop:
+# /* /404.html 308
