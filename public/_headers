@@ -5,7 +5,11 @@
   Referrer-Policy: strict-origin-when-cross-origin
   X-XSS-Protection: 1; mode=block
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; script-src http://www.w3.org/ https://schema.org ; style-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';
+  Content-Security-Policy: default-src 'self'; 
+                         script-src 'self' https://static.cloudflareinsights.com/ http://www.w3.org/ https://schema.org; 
+                         style-src 'self'; 
+                         object-src 'none'; 
+                         base-uri 'self';
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   Cross-Origin-Embedder-Policy: require-corp
   Cross-Origin-Opener-Policy: same-origin
