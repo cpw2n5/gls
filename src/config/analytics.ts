@@ -17,6 +17,20 @@ export const plausibleConfig = {
   }
 };
 
+// Cloudflare Web Analytics Configuration
+export const cloudflareConfig = {
+  enabled: isProduction, // Only enable in production by default
+  token: 'your-token-here', // Replace with your actual Cloudflare Web Analytics token
+  respectDoNotTrack: true, // Respect Do Not Track browser setting
+  scriptProps: {
+    defer: true,
+    'data-cf-beacon': JSON.stringify({
+      token: 'your-token-here',
+      spa: false, // Set to true for single-page applications
+    }),
+  }
+};
+
 // Google AdSense Configuration
 export const adsenseConfig = {
   enabled: isProduction, // Only enable in production by default
@@ -36,8 +50,8 @@ export const consentConfig = {
   enabled: true, // Enable consent management
   cookieExpiration: 365, // Cookie expiration in days
   defaultConsent: {
-    analytics: true, // Default to no analytics consent
-    ads: true // Default to no ads consent
+    analytics: false, // Default to no analytics consent
+    ads: false // Default to no ads consent
   }
 };
 
@@ -45,11 +59,11 @@ export const consentConfig = {
 export function shouldLoadAnalytics(): boolean {
   // In development, respect the enabled flag
   if (isDevelopment) {
-    return plausibleConfig.enabled && plausibleConfig.trackLocalhost;
+    return (plausibleConfig.enabled || cloudflareConfig.enabled) && plausibleConfig.trackLocalhost;
   }
   
   // In production, always respect the enabled flag
-  return false;
+  return plausibleConfig.enabled || cloudflareConfig.enabled;
 }
 
 // Helper function to check if ads should be loaded

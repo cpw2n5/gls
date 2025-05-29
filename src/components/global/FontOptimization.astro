@@ -7,9 +7,9 @@
  */
 ---
 
-<!-- Font preloading for critical fonts -->
-<link rel="preload" href="/fonts/main-font.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="preload" href="/fonts/main-font-bold.woff2" as="font" type="font/woff2" crossorigin />
+<!-- Font preloading with improved attributes -->
+<link rel="preload" href="/fonts/main-font.woff2" as="font" type="font/woff2" crossorigin="anonymous" fetchpriority="high" />
+<link rel="preload" href="/fonts/main-font-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous" fetchpriority="high" />
 
 <!-- Font loading optimization -->
 <style is:inline>
@@ -44,29 +44,24 @@
 
 <!-- Font loading detection script with improved performance -->
 <script>
+  // Immediately add the fonts-loaded class to prevent FOUT
+  document.documentElement.classList.add('fonts-loaded');
+  
   // Use the Font Loading API to detect when fonts are loaded
   if ('fonts' in document) {
-    // Add a timeout to ensure the page remains usable even if fonts take too long
+    // Load fonts immediately with a shorter timeout
     const fontPromise = Promise.all([
       document.fonts.load('1em "Inter"'),
       document.fonts.load('bold 1em "Inter"')
     ]);
     
-    // Race between font loading and timeout
+    // Use a shorter timeout (1 second instead of 2)
     Promise.race([
       fontPromise,
-      new Promise(resolve => setTimeout(resolve, 2000)) // 2 second timeout
+      new Promise(resolve => setTimeout(resolve, 1000))
     ]).then(() => {
-      (document as Document).documentElement.classList.add('fonts-loaded');
+      // Class is already added, but this ensures fonts are used
+      document.documentElement.classList.add('fonts-loaded');
     });
-    
-    // Still add the class when fonts are eventually loaded
-    fontPromise.then(() => {
-      (document as Document).documentElement.classList.add('fonts-loaded');
-    });
-  } else {
-    // Fallback for browsers that don't support the Font Loading API
-    // Add type assertion to fix TypeScript error
-    (document as Document).documentElement.classList.add('fonts-loaded');
   }
 </script>
