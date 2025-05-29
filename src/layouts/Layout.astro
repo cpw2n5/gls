@@ -74,10 +74,11 @@ const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 	</head>
 	<body class="min-h-screen flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
 		<Header />
-		<main class="flex-grow">
+		<main class="flex-grow min-h-[60vh] md:min-h-[500px]">
 			<slot />
 		</main>
 		<Footer />
 		<ConsentManager />
 	</body>
 </html>
+<main class="flex-grow min-h-[60vh] md:min-h-[500px]"></main>
