@@ -36,8 +36,8 @@ export const consentConfig = {
   enabled: true, // Enable consent management
   cookieExpiration: 365, // Cookie expiration in days
   defaultConsent: {
-    analytics: false, // Default to no analytics consent
-    ads: false // Default to no ads consent
+    analytics: true, // Default to no analytics consent
+    ads: true // Default to no ads consent
   }
 };
 
@@ -49,7 +49,7 @@ export function shouldLoadAnalytics(): boolean {
   }
   
   // In production, always respect the enabled flag
-  return plausibleConfig.enabled;
+  return false;
 }
 
 // Helper function to check if ads should be loaded
@@ -60,5 +60,5 @@ export function shouldLoadAds(): boolean {
   }
   
   // In production, always respect the enabled flag
-  return adsenseConfig.enabled;
+  return false;
 }
