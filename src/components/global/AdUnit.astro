@@ -25,8 +25,16 @@ const adSlots = {
   'footer': slot || 'footer-default'
 };
 
+// Map kebab-case type to camelCase property name for config lookup
+const typeToConfigMap: Record<Props['type'], keyof typeof adsenseConfig.enabledAdUnits> = {
+  'banner': 'banner',
+  'sidebar': 'sidebar',
+  'in-content': 'inContent',
+  'footer': 'footer'
+};
+
 // Check if this ad unit type is enabled in config
-const isAdTypeEnabled = adsenseConfig.enabledAdUnits[type] || false;
+const isAdTypeEnabled = adsenseConfig.enabledAdUnits[typeToConfigMap[type]] || false;
 
 // Only load ads if they should be loaded (based on environment and config)
 const loadAds = shouldLoadAds() && isAdTypeEnabled;
@@ -48,7 +56,6 @@ const adFormat = type === 'in-content' ? 'auto' : '';
       data-ad-format={adFormat}
       data-full-width-responsive="true"
       data-adtest={adsenseConfig.testMode ? "on" : "off"}
-      loading="lazy"
     ></ins>
   ) : (
     <div class="text-center text-gray-500 dark:text-gray-400">

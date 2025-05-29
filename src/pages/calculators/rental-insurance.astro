@@ -5,6 +5,11 @@ import { getEntry } from "astro:content";
 
 // Get calculator configuration from content collection
 const calculatorData = await getEntry("calculators", "rental-insurance");
+
+if (!calculatorData) {
+  throw new Error("Calculator data for rental-insurance not found");
+}
+
 const { title, description, inputs } = calculatorData.data;
 
 // Enhance inputs with help text
@@ -36,7 +41,15 @@ const relatedArticles = calculatorData.data.relatedArticles || [];
 const relatedCalculators = calculatorData.data.relatedCalculators || [];
 
 // Initial empty results
-const initialResults = [];
+// Define the result type based on what CalculatorWidget expects
+type CalculatorResult = {
+  label: string;
+  value: string | number;
+  type?: "number" | "text" | "currency" | "percentage";
+  description?: string;
+};
+
+const initialResults: CalculatorResult[] = [];
 ---
 
 <CalculatorLayout title={title} description={description}>
@@ -97,12 +110,36 @@ const initialResults = [];
 </CalculatorLayout>
 
 <script>
+  // Define the result type for the calculator
+  interface CalculatorResult {
+    label: string;
+    value: string | number;
+    type: string;
+    description: string;
+  }
+
+  // Define the form data interface
+  interface RentalInsuranceFormData {
+    propertyValue?: string | number;
+    location?: string;
+    securityFeatures?: boolean;
+    valuables?: string;
+    liabilityCoverage?: string | number;
+  }
+
+  // Declare the calculator function on the window object
+  declare global {
+    interface Window {
+      calculateRentalInsurance: (formData: RentalInsuranceFormData) => CalculatorResult[];
+    }
+  }
+
   /**
    * Calculate rental insurance recommendations based on form inputs
-   * @param {Object} formData - The form data object
-   * @returns {Array} Array of result objects
+   * @param {RentalInsuranceFormData} formData - The form data object
+   * @returns {CalculatorResult[]} Array of result objects
    */
-  window.calculateRentalInsurance = function(formData) {
+  window.calculateRentalInsurance = function(formData: RentalInsuranceFormData) {
     // Extract form values
     const propertyValue = Number(formData.propertyValue) || 25000;
     const location = formData.location || 'suburban';

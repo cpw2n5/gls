@@ -269,13 +269,20 @@ const showConsentManager = consentConfig.enabled;
   
   // Close modal when clicking outside
   window.addEventListener('click', (e) => {
-    if (e.target === consentModal) {
+    if (e.target === consentModal && consentModal) {
       consentModal.style.display = 'none';
     }
   });
   
+  // Define the type for our consent API
+  type ConsentAPI = {
+    getConsent: () => { analytics: boolean; ads: false };
+    hasAnalyticsConsent: () => boolean;
+    hasAdsConsent: () => boolean;
+  };
+
   // Expose consent API to window for other scripts
-  window.glsConsent = {
+  (window as any).glsConsent = {
     getConsent: () => {
       const savedConsent = getCookie(CONSENT_COOKIE_NAME);
       if (savedConsent) {
@@ -288,10 +295,10 @@ const showConsentManager = consentConfig.enabled;
       return { analytics: false, ads: false };
     },
     hasAnalyticsConsent: () => {
-      return window.glsConsent.getConsent().analytics;
+      return ((window as any).glsConsent as ConsentAPI).getConsent().analytics;
     },
     hasAdsConsent: () => {
-      return window.glsConsent.getConsent().ads;
+      return ((window as any).glsConsent as ConsentAPI).getConsent().ads;
     }
   };
 </script>

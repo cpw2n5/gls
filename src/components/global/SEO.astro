@@ -1,4 +1,10 @@
 ---
+// Define interface for breadcrumb items
+interface BreadcrumbItem {
+  name: string;
+  url: string;
+}
+
 const {
   title,
   description,
@@ -11,7 +17,7 @@ const {
   tags = [],
   section = '',
   noIndex = false,
-  breadcrumbs = []
+  breadcrumbs = [] as BreadcrumbItem[]
 } = Astro.props;
 
 const siteName = 'GetLifeSorted';
@@ -44,7 +50,7 @@ if (breadcrumbs.length > 0) {
   const breadcrumbsData = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "itemListElement": breadcrumbs.map((crumb, index) => ({
+    "itemListElement": breadcrumbs.map((crumb: BreadcrumbItem, index: number) => ({
       "@type": "ListItem",
       "position": index + 1,
       "name": crumb.name,
@@ -139,7 +145,7 @@ if (type === 'calculator') {
 {type === 'article' && section && (
   <meta property="article:section" content={section} />
 )}
-{type === 'article' && tags.map(tag => (
+{type === 'article' && tags.map((tag: string) => (
   <meta property="article:tag" content={tag} />
 ))}
 

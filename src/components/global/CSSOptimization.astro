@@ -6,15 +6,7 @@
  * It implements strategies to reduce render-blocking CSS and improve critical rendering path.
  */
 
-// Get the current URL path to determine which CSS files are critical for this page
-const currentPath = Astro.url.pathname;
-const isHomePage = currentPath === '/' || currentPath === '';
-const isArticlePage = currentPath.startsWith('/articles/') && !currentPath.endsWith('/articles/');
 
-// Determine page type for critical CSS selection
-let pageType = 'other';
-if (isHomePage) pageType = 'home';
-if (isArticlePage) pageType = 'article';
 ---
 
 <script>

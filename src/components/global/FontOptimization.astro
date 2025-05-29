@@ -57,15 +57,16 @@
       fontPromise,
       new Promise(resolve => setTimeout(resolve, 2000)) // 2 second timeout
     ]).then(() => {
-      document.documentElement.classList.add('fonts-loaded');
+      (document as Document).documentElement.classList.add('fonts-loaded');
     });
     
     // Still add the class when fonts are eventually loaded
     fontPromise.then(() => {
-      document.documentElement.classList.add('fonts-loaded');
+      (document as Document).documentElement.classList.add('fonts-loaded');
     });
   } else {
     // Fallback for browsers that don't support the Font Loading API
-    document.documentElement.classList.add('fonts-loaded');
+    // Add type assertion to fix TypeScript error
+    (document as Document).documentElement.classList.add('fonts-loaded');
   }
 </script>
