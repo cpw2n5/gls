@@ -31,6 +31,12 @@ header {
   padding-right: 1rem;
 }
 
+.section{
+  width: 100%;
+  height: auto; 
+  aspect-ratio: 16 / 9;
+}
+
 /* Hero section styles - critical for home page */
 .bg-gradient-to-br {
   background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
