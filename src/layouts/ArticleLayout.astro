@@ -1,7 +1,5 @@
 ---
 import Layout from "./Layout.astro";
-import OptimizedImage from "../components/global/OptimizedImage.astro";
-// Using standard SVG icons instead of astro-icon
 
 const {
   title,
@@ -175,17 +173,6 @@ const shareLinks = {
               </a>
             ))}
           </div>
-        )}
-        
-        {image && (
-          <OptimizedImage
-            src={image}
-            alt={title}
-            class="w-full h-auto rounded-lg object-cover mb-6"
-            loading="eager"
-            fetchpriority="high"
-            sizes="(max-width: 768px) 100vw, 768px"
-          />
         )}
         
         <div class="flex items-center space-x-4 mb-6 no-print">

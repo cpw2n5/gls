@@ -2,8 +2,6 @@
 import Header from "../components/global/Header.astro";
 import Footer from "../components/global/Footer.astro";
 import SEO from "../components/global/SEO.astro";
-import FontOptimization from "../components/global/FontOptimization.astro";
-import CSSOptimization from "../components/global/CSSOptimization.astro";
 
 const {
 	title,
@@ -53,23 +51,6 @@ const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 			noIndex={noIndex}
 			breadcrumbs={breadcrumbs}
 		/>
-		
-		<!-- CSS Optimization must come before other CSS -->
-		<CSSOptimization />
-		<FontOptimization />
-		
-		<!-- Add resource hints for faster loading -->
-		{isHomePage && (
-			<>
-				<!-- Preconnect to origins of critical resources -->
-				<link rel="preconnect" href={Astro.url.origin} crossorigin />
-				
-				<!-- Prefetch important pages users might navigate to -->
-				<link rel="prefetch" href="/calculators" />
-				<link rel="prefetch" href="/articles" />
-				<link rel="prefetch" href="/guides" />
-			</>
-		)}
 	</head>
 	<body class="min-h-screen flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
 		<Header />
