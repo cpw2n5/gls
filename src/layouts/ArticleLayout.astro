@@ -1,6 +1,5 @@
 ---
 import Layout from "./Layout.astro";
-import AdUnit from "../components/global/AdUnit.astro";
 import OptimizedImage from "../components/global/OptimizedImage.astro";
 // Using standard SVG icons instead of astro-icon
 
@@ -245,11 +244,6 @@ const shareLinks = {
             <slot />
           </div>
           
-          {showAds && (
-            <div class="mt-8 no-print">
-              <AdUnit type="in-content" />
-            </div>
-          )}
           
           <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 no-print">
             <h3 class="text-lg font-semibold mb-4">Tags</h3>
@@ -267,11 +261,6 @@ const shareLinks = {
         </div>
         
         <div class="space-y-6 no-print">
-          {showAds && (
-            <div>
-              <AdUnit type="sidebar" />
-            </div>
-          )}
           
           <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 sticky top-24">
             <h2 class="text-xl font-semibold mb-4">Related Articles</h2>
