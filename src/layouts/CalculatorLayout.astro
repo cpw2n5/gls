@@ -1,11 +1,9 @@
 ---
 import Layout from "./Layout.astro";
-import AdUnit from "../components/global/AdUnit.astro";
 
-const { 
-  title, 
-  description, 
-  showAds = true 
+const {
+  title,
+  description
 } = Astro.props;
 ---
 
@@ -28,20 +26,9 @@ const {
           <slot />
         </div>
         
-        {showAds && (
-          <div class="mt-8">
-            <AdUnit type="in-content" />
-          </div>
-        )}
       </div>
       
       <div class="space-y-6">
-        {showAds && (
-          <div>
-            <AdUnit type="sidebar" />
-          </div>
-        )}
-        
         <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
           <h2 class="text-xl font-semibold mb-4">Related Calculators</h2>
           <slot name="related" />

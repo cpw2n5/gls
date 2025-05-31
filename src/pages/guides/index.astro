@@ -1,7 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
-import AdUnit from "../../components/global/AdUnit.astro";
 // Replace Icon import with standard SVG icons
 
 // Get all published guides
@@ -98,11 +97,6 @@ function calculateReadingTime(content: string) {
           </div>
         </div>
       )}
-      
-      {/* Add banner ad between featured guides and categorized guides */}
-      <div class="my-8">
-        <AdUnit type="banner" className="mx-auto" />
-      </div>
       
       <div class="space-y-12">
         {beginnerGuides.length > 0 && (
@@ -244,10 +238,6 @@ function calculateReadingTime(content: string) {
           </div>
         )}
         
-        {/* Add in-content ad at the bottom of the page */}
-        <div class="mt-12">
-          <AdUnit type="in-content" className="mx-auto" />
-        </div>
       </div>
     </div>
   </div>
