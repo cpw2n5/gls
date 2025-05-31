@@ -99,13 +99,6 @@ const { type, className, slot } = Astro.props;
 <AdUnit type="banner" className="my-4" />
 ```
 
-### ConsentManager (`ConsentManager.astro`)
-
-Component for managing user consent for cookies, analytics, and ads.
-
-```astro
-<ConsentManager />
-```
 
 ### FontOptimization (`FontOptimization.astro`)
 
